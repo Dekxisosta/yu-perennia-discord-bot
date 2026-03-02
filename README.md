@@ -20,7 +20,11 @@ Fast, reliable, and ready to make your server lively!
 [![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=fff)](#)
 [![Visual Studio Code](https://custom-icon-badges.demolab.com/badge/Visual%20Studio%20Code-0078d7.svg?logo=vsc&logoColor=white)](#)
 ![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)
-![Status](https://img.shields.io/badge/Status-Early%20Development-yellow)
+![Status](https://img.shields.io/badge/Status-On%20Hold-yellow)
+
+## Author's Note
+I will move to making other projects for now. By the time I'm writing this section, I realized I have no need for a personalized discord bot yet.
+However, if the need arises or a number of people have pushed for such bot to function, then I will work on this project again
 
 ## Description
 A modular and scalable Discord bot framework built with Python and discord.py.
