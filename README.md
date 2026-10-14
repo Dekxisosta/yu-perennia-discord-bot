@@ -1,14 +1,14 @@
  <div align="center">
 
-# ☕ Yu Perennia
+# Yu Perennia
 
 **A cheerful, modular Discord bot ready to serve your community.**
 
-[![discord.py](https://img.shields.io/badge/discord.py-2.4.0-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discordpy.readthedocs.io/)
-[![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
-[![DeepL](https://img.shields.io/badge/DeepL-Translation-0F2B46?style=for-the-badge&logo=deepl&logoColor=white)](https://www.deepl.com/)
-[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
-[![Status](https://img.shields.io/badge/Status-In_Development-yellow?style=for-the-badge)]()
+[![discord.py](https://img.shields.io/badge/discord.py-2.4.0-5865F2?style=flat-square&logo=discord&logoColor=white)](https://discordpy.readthedocs.io/)
+[![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
+[![DeepL](https://img.shields.io/badge/DeepL-Translation-0F2B46?style=flat-square&logo=deepl&logoColor=white)](https://www.deepl.com/)
+[![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
+[![Status](https://img.shields.io/badge/Status-In_Development-yellow?style=flat-square)]()
 
 <img src="docs/images/yu-perennia.png" alt="Yu Perennia" width="200" height="200" />
 
