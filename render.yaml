@@ -1,0 +1,18 @@
+services:
+  # Yu Perennia Discord Bot
+  - type: web
+    name: yu-perennia-bot
+    env: python
+    region: oregon
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python src/main.py
+    envVars:
+      - key: DISCORD_TOKEN
+        sync: false
+      - key: DEEPL_API_KEY
+        sync: false
+      - key: PYTHON_VERSION
+        value: 3.11.0
+    # Health check endpoint (optional - remove if bot doesn't have one)
+    # healthCheckPath: /health
