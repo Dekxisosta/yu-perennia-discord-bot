@@ -1,0 +1,147 @@
+---
+import { REPO_URL } from '../site';
+
+const steps = [
+  {
+    title: 'Clone the repository',
+    code: `git clone ${REPO_URL}.git\ncd ${REPO_URL.split('/').pop()}`,
+  },
+  {
+    title: 'Install the dependencies',
+    code: 'pip install -r requirements.txt',
+  },
+  {
+    title: 'Add your tokens',
+    code: 'cp .env.example .env\n# then set DISCORD_TOKEN\n# and DEEPL_API_KEY (optional, for translation)',
+  },
+  {
+    title: 'Start Yu',
+    code: 'python src/main.py',
+  },
+];
+---
+
+<section class="host" id="run">
+  <div class="wrap">
+    <h2>Run Yu yourself</h2>
+    <p class="lede">
+      You need Python 3.11 or newer and a Discord bot token. A DeepL key is only needed for translation.
+    </p>
+
+    <ol class="steps">
+      {
+        steps.map((s) => (
+          <li class="step">
+            <h3>{s.title}</h3>
+            <div class="code">
+              <pre><code>{s.code}</code></pre>
+              <button type="button" class="copy" data-copy={s.code.split('\n').filter((l) => !l.startsWith('#')).join('\n')}>
+                Copy
+              </button>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .host {
+    --edge: var(--tan);
+    --shadow-color: var(--tan);
+    --focus: var(--paper);
+    background: var(--ink);
+    color: var(--paper);
+    padding-block: clamp(3.5rem, 8vw, 6.5rem);
+  }
+  .steps {
+    list-style: none;
+    counter-reset: step;
+    margin: 3rem 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(1.5rem, 3vw, 2.5rem);
+  }
+  .step {
+    counter-increment: step;
+    position: relative;
+    padding: 1.5rem;
+    border: 3px solid var(--tan);
+    box-shadow: 6px 6px 0 var(--slate);
+  }
+  .step h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    margin-bottom: 1.1rem;
+    font-size: 1.9rem;
+  }
+  .step h3::before {
+    content: counter(step);
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    background: var(--tan);
+    color: var(--ink);
+    font-size: 1.6rem;
+    line-height: 1;
+  }
+  .code {
+    position: relative;
+    background: var(--paper);
+    color: var(--ink);
+    border: 3px solid var(--tan);
+  }
+  pre {
+    margin: 0;
+    padding: 0.9rem 5.5rem 0.9rem 1rem;
+    overflow-x: auto;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+  .copy {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    padding: 0.2rem 0.7rem;
+    border: 2px solid var(--ink);
+    background: var(--tan);
+    color: var(--ink);
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .copy:hover {
+    background: var(--mist);
+  }
+  .copy:active {
+    transform: translate(2px, 2px);
+  }
+
+  @media (max-width: 62rem) {
+    .steps {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(btn.dataset.copy ?? '');
+        btn.textContent = 'Copied';
+      } catch {
+        btn.textContent = 'Press Ctrl+C';
+      }
+      window.setTimeout(() => (btn.textContent = 'Copy'), 1800);
+    });
+  });
+</script>

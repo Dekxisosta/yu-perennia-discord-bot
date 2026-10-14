@@ -1,0 +1,77 @@
+---
+import { INVITE_URL } from '../site';
+---
+
+<header class="bar">
+  <div class="wrap bar__inner">
+    <a class="brand" href="#top">
+      <img src="/yu.png" width="44" height="44" alt="" />
+      <span>Yu Perennia</span>
+    </a>
+    <nav class="links" aria-label="Sections">
+      <a href="#menu">Commands</a>
+      <a href="#translate">Translation</a>
+      <a href="#run">Run it yourself</a>
+    </nav>
+    <a class="btn btn--ink bar__cta" href={INVITE_URL}>Add to Discord</a>
+  </div>
+</header>
+
+<style>
+  .bar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--paper);
+    border-bottom: var(--border);
+  }
+  .bar__inner {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding-block: 0.65rem;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    margin-right: auto;
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    font-weight: 800;
+    font-stretch: 75%;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+  }
+  .brand img {
+    border: var(--border);
+    background: var(--mist);
+  }
+  .links {
+    display: flex;
+    gap: 1.5rem;
+    font-weight: 650;
+  }
+  .links a {
+    text-decoration: none;
+  }
+  .links a:hover {
+    text-decoration: underline;
+  }
+  .bar__cta {
+    min-height: 2.6rem;
+    padding-inline: 1rem;
+    font-size: 1.05rem;
+    box-shadow: var(--shadow-sm);
+  }
+  @media (max-width: 52rem) {
+    .links {
+      display: none;
+    }
+  }
+  @media (max-width: 26rem) {
+    .brand span {
+      display: none;
+    }
+  }
+</style>

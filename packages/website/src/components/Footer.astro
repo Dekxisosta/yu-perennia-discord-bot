@@ -1,0 +1,42 @@
+---
+import { REPO_URL, HAS_REPO } from '../site';
+---
+
+<footer class="foot">
+  <div class="wrap foot__inner">
+    <p class="foot__quote">Welcome in! Leave it to me!</p>
+    <div class="foot__meta">
+      <p>Yu Perennia is open source under the MIT License.</p>
+      <p>Built with discord.py and DeepL.</p>
+      {HAS_REPO && <a href={REPO_URL}>Source on GitHub</a>}
+    </div>
+  </div>
+</footer>
+
+<style>
+  .foot {
+    background: var(--tan);
+    border-top: var(--border);
+    padding-block: 2.5rem 3rem;
+  }
+  .foot__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem 3rem;
+  }
+  .foot__quote {
+    font-family: var(--font-display);
+    font-size: clamp(2.2rem, 6vw, 4rem);
+    font-weight: 800;
+    font-stretch: 75%;
+    line-height: 0.95;
+    letter-spacing: -0.015em;
+  }
+  .foot__meta {
+    display: grid;
+    gap: 0.2rem;
+    font-size: 0.98rem;
+  }
+</style>

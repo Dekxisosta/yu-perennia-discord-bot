@@ -1,0 +1,243 @@
+---
+import { greet } from '../data/lines';
+
+const commands = [
+  { id: 'greet', label: '/greet' },
+  { id: 'quote', label: '/quote' },
+  { id: '8ball', label: '/8ball' },
+  { id: 'roll', label: '/roll' },
+  { id: 'coinflip', label: '/coinflip' },
+  { id: 'choose', label: '/choose' },
+  { id: 'ping', label: '/ping' },
+];
+---
+
+<section class="pad" aria-labelledby="pad-title" data-order-pad>
+  <div class="pad__head">
+    <h2 id="pad-title">Order pad</h2>
+    <p>Run a command and see how Yu answers.</p>
+  </div>
+
+  <div class="pad__buttons" role="group" aria-label="Commands to try">
+    {
+      commands.map((c, i) => (
+        <button type="button" class="chip" data-cmd={c.id} aria-pressed={i === 0 ? 'true' : 'false'}>
+          {c.label}
+        </button>
+      ))
+    }
+  </div>
+
+  <div class="chat" aria-live="polite" aria-atomic="true">
+    <div class="msg msg--you">
+      <span class="who">You</span>
+      <span class="cmd" data-echo>/greet</span>
+    </div>
+    <div class="msg msg--yu">
+      <img src="/yu.png" width="44" height="44" alt="" />
+      <div class="body">
+        <span class="who">Yu Perennia <span class="app">APP</span></span>
+        <p data-reply>{greet[0]}</p>
+      </div>
+    </div>
+  </div>
+
+  <p class="pad__note">Replies use Yu's real lines. The ping number is made up.</p>
+</section>
+
+<style>
+  .pad {
+    background: var(--paper);
+    border: var(--border);
+    box-shadow: 10px 10px 0 var(--ink);
+  }
+  .pad__head {
+    padding: 1rem 1.25rem;
+    background: var(--ink);
+    color: var(--paper);
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .pad__head h2 {
+    font-size: 2rem;
+  }
+  .pad__head p {
+    color: var(--tan);
+    font-size: 0.98rem;
+  }
+  .pad__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    padding: 1.1rem 1.25rem;
+    border-bottom: var(--border);
+  }
+  .chip {
+    padding: 0.35rem 0.8rem;
+    border: var(--border);
+    background: var(--paper);
+    color: var(--ink);
+    box-shadow: var(--shadow-sm);
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: transform 80ms ease-out, box-shadow 80ms ease-out;
+  }
+  .chip:hover {
+    background: var(--tan);
+  }
+  .chip:active {
+    transform: translate(3px, 3px);
+    box-shadow: 0 0 0 var(--ink);
+  }
+  .chip[aria-pressed='true'] {
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .chat {
+    display: grid;
+    gap: 1rem;
+    padding: 1.25rem;
+    min-height: 13.5rem;
+    align-content: start;
+    background: var(--mist);
+  }
+  .msg {
+    display: flex;
+    gap: 0.8rem;
+    align-items: flex-start;
+  }
+  .msg--you {
+    align-items: center;
+  }
+  .who {
+    display: block;
+    font-weight: 750;
+    font-size: 0.95rem;
+  }
+  .msg--you .who {
+    min-width: 3rem;
+  }
+  .msg--yu img {
+    flex: none;
+    border: var(--border);
+    background: var(--paper);
+  }
+  .body {
+    min-width: 0;
+    flex: 1;
+  }
+  .body p {
+    margin-top: 0.25rem;
+    padding: 0.7rem 0.9rem;
+    border: var(--border);
+    background: var(--paper);
+    box-shadow: var(--shadow-sm);
+    font-size: 1.05rem;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+  }
+  .body p :global(span.line) {
+    display: block;
+  }
+  .app {
+    display: inline-block;
+    margin-left: 0.3rem;
+    padding: 0 0.35rem;
+    background: var(--ink);
+    color: var(--paper);
+    font-size: 0.7rem;
+    font-weight: 750;
+    vertical-align: 0.1em;
+  }
+  .pad__note {
+    padding: 0.7rem 1.25rem;
+    border-top: var(--border);
+    color: var(--cocoa);
+    font-size: 0.9rem;
+    max-width: none;
+  }
+</style>
+
+<script>
+  import { greet, quote, eightBall, formats } from '../data/lines';
+
+  const pad = document.querySelector<HTMLElement>('[data-order-pad]');
+  if (pad) {
+    const echo = pad.querySelector<HTMLElement>('[data-echo]')!;
+    const reply = pad.querySelector<HTMLElement>('[data-reply]')!;
+    const buttons = Array.from(pad.querySelectorAll<HTMLButtonElement>('[data-cmd]'));
+
+    const last: Record<string, string> = { greet: greet[0] };
+
+    const pick = <T,>(key: string, list: T[]): T => {
+      let item: T;
+      do {
+        item = list[Math.floor(Math.random() * list.length)];
+      } while (list.length > 1 && String(item) === last[key]);
+      last[key] = String(item);
+      return item;
+    };
+    const int = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
+    const fill = (tpl: string, value: string | number) => tpl.replace('{}', String(value));
+
+    const line = (text: string) => {
+      const span = document.createElement('span');
+      span.className = 'line';
+      // Render **bold** segments the way Discord would.
+      text.split(/(\*\*[^*]+\*\*)/).forEach((part) => {
+        if (part.startsWith('**') && part.endsWith('**')) {
+          const strong = document.createElement('strong');
+          strong.textContent = part.slice(2, -2);
+          span.append(strong);
+        } else if (part) {
+          span.append(part);
+        }
+      });
+      return span;
+    };
+
+    const run = (id: string): { echo: string; lines: string[] } => {
+      switch (id) {
+        case 'quote':
+          return { echo: '/quote', lines: [pick('quote', quote)] };
+        case '8ball': {
+          const q = 'Will the tea be ready soon?';
+          return {
+            echo: `/8ball ${q}`,
+            lines: [`❓Question: ${q}`, `🐐Response: ${pick('8ball', eightBall)}`],
+          };
+        }
+        case 'roll':
+          return { echo: '/roll', lines: [fill(formats.roll, int(1, 6))] };
+        case 'coinflip':
+          return { echo: '/coinflip', lines: [fill(formats.coinflip, Math.random() < 0.5 ? 'heads' : 'tails')] };
+        case 'choose': {
+          const options = ['tea', 'coffee', 'cake'];
+          return {
+            echo: `/choose ${options.join('|')}`,
+            lines: [fill(formats.choose, `${pick('choose', options)}`)],
+          };
+        }
+        case 'ping':
+          return { echo: '/ping', lines: [fill(formats.ping, int(38, 120))] };
+        default:
+          return { echo: '/greet', lines: [pick('greet', greet)] };
+      }
+    };
+
+    buttons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const out = run(btn.dataset.cmd!);
+        buttons.forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+        echo.textContent = out.echo;
+        reply.replaceChildren(...out.lines.map(line));
+      });
+    });
+  }
+</script>

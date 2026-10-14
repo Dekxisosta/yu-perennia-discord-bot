@@ -1,0 +1,135 @@
+---
+import OrderPad from './OrderPad.astro';
+import { INVITE_URL } from '../site';
+---
+
+<section class="hero" id="top">
+  <div class="wrap hero__grid">
+    <div class="hero__copy">
+      <h1>
+        <span>Yu</span>
+        <span>Perennia</span>
+      </h1>
+      <p class="hero__lede">
+        A Discord bot that translates your chat, rolls the dice, and shows troublemakers the door.
+      </p>
+      <p class="hero__sub">
+        Yu is a goat demihuman who waits tables at Cafe Camellia and holds the line for her division.
+        In your server, she does the same.
+      </p>
+      <div class="hero__cta">
+        <a class="btn btn--ink" href={INVITE_URL}>Add to Discord</a>
+        <a class="btn" href="#menu">See the commands</a>
+      </div>
+      <p class="hero__prefix">
+        Every command works as a slash command or with the <code class="cmd">yp!</code> prefix.
+      </p>
+    </div>
+
+    <div class="hero__pad">
+      <figure class="sticker">
+        <img src="/yu.png" width="128" height="128" alt="Yu Perennia, a smiling goat-eared girl in a maid headpiece" />
+      </figure>
+      <OrderPad />
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    background: var(--tan);
+    border-bottom: var(--border);
+    padding-block: clamp(2.5rem, 6vw, 5rem) clamp(3.5rem, 7vw, 6rem);
+    overflow: clip;
+  }
+  .hero__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    gap: clamp(2rem, 5vw, 4.5rem);
+    align-items: center;
+  }
+  h1 {
+    display: flex;
+    flex-direction: column;
+    font-size: clamp(6.5rem, 15vw, 11rem);
+    line-height: 0.8;
+    letter-spacing: -0.03em;
+  }
+  h1 span:first-child {
+    color: var(--paper);
+    -webkit-text-stroke: 3px var(--ink);
+    paint-order: stroke fill;
+    text-shadow: 6px 6px 0 var(--ink);
+  }
+  h1 span:last-child {
+    margin-top: 0.06em;
+  }
+  .hero__lede {
+    margin-top: 2rem;
+    max-width: 24ch;
+    font-family: var(--font-display);
+    font-size: clamp(1.9rem, 3.4vw, 2.6rem);
+    font-weight: 750;
+    font-stretch: 80%;
+    line-height: 1.05;
+  }
+  .hero__sub {
+    margin-top: 1.1rem;
+    max-width: 44ch;
+    font-size: 1.15rem;
+  }
+  .hero__cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 1.25rem;
+    margin-top: 2rem;
+  }
+  .hero__prefix {
+    margin-top: 1.75rem;
+    font-size: 0.98rem;
+  }
+  .hero__pad {
+    position: relative;
+    padding-top: 3.5rem;
+  }
+  .sticker {
+    position: absolute;
+    z-index: 2;
+    top: 0;
+    right: -0.5rem;
+    margin: 0;
+    padding: 0.4rem;
+    background: var(--rose);
+    border: var(--border);
+    box-shadow: var(--shadow);
+    transform: rotate(4deg);
+  }
+  .sticker img {
+    border: 2px solid var(--ink);
+    width: 112px;
+    height: 112px;
+    object-fit: cover;
+  }
+
+  @media (max-width: 62rem) {
+    .hero__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .hero__pad {
+      padding-top: 4rem;
+    }
+    .sticker {
+      right: 0.5rem;
+    }
+  }
+  @media (max-width: 32rem) {
+    h1 span:first-child {
+      -webkit-text-stroke-width: 2px;
+      text-shadow: 4px 4px 0 var(--ink);
+    }
+    .sticker img {
+      width: 84px;
+      height: 84px;
+    }
+  }
+</style>

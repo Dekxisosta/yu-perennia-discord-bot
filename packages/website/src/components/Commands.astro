@@ -1,0 +1,136 @@
+---
+const general = [
+  { cmd: '/greet', desc: 'Yu greets you like a regular at Cafe Camellia.' },
+  { cmd: '/ping', desc: 'Check how fast Yu responds.' },
+  { cmd: '/info', desc: 'Learn about Yu and what she can do.' },
+  { cmd: '/quote', desc: 'Get a little encouragement.' },
+  { cmd: '/say <message>', desc: 'Make Yu repeat your message. Filtered words stay filtered.' },
+  { cmd: '/roll', desc: 'Roll a die from 1 to 6.' },
+  { cmd: '/8ball <question>', desc: 'Ask for a fortune. Random answers, no AI.' },
+  { cmd: '/coinflip', desc: 'Heads or tails.' },
+  { cmd: '/choose tea|coffee|cake', desc: 'Let Yu pick. Separate options with | or a comma.' },
+];
+---
+
+<section class="commands" id="menu">
+  <div class="wrap">
+    <h2>Commands</h2>
+    <p class="lede">Slash commands or <code class="cmd">yp!</code> prefix, your choice. Moderation uses <code class="cmd">yp!mod</code>.</p>
+
+    <div class="grid">
+      <article class="card card--general">
+        <h3>General</h3>
+        <ul class="rows">
+          {
+            general.map((g) => (
+              <li>
+                <code class="cmd">{g.cmd}</code>
+                <span>{g.desc}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </article>
+
+      <div class="side">
+        <article class="card card--translate" id="translate-card">
+          <h3>Translation</h3>
+          <p>Auto-translate a channel between English and Chinese or Japanese, or translate a single message on demand.</p>
+          <code class="cmd">/translate &lt;chinese|japanese|off&gt; [text]</code>
+          <a class="more" href="#translate">See it in a channel</a>
+        </article>
+
+        <article class="card card--mod">
+          <h3>Moderation</h3>
+          <p>Remove a user from the server. Yu checks permissions before she shows anyone the door.</p>
+          <code class="cmd">/kick &lt;user&gt; [reason]</code>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .commands {
+    padding-block: clamp(3.5rem, 8vw, 6.5rem);
+    border-bottom: var(--border);
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+    gap: clamp(1.5rem, 3vw, 2.5rem);
+    margin-top: 3rem;
+    align-items: start;
+  }
+  .side {
+    display: grid;
+    gap: clamp(1.5rem, 3vw, 2.5rem);
+  }
+  .card {
+    border: var(--border);
+    box-shadow: var(--shadow);
+    padding: 1.5rem;
+  }
+  .card h3 {
+    margin-bottom: 1rem;
+  }
+  .card p {
+    margin-bottom: 1.1rem;
+  }
+  .card--general {
+    background: var(--paper);
+  }
+  .card--translate {
+    background: var(--mist);
+  }
+  .card--mod {
+    background: var(--tan);
+  }
+  .rows {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: var(--border);
+  }
+  .rows li {
+    display: grid;
+    grid-template-columns: 14.5rem minmax(0, 1fr);
+    gap: 0.4rem 1.25rem;
+    align-items: baseline;
+    padding-block: 0.8rem;
+    border-bottom: 2px solid var(--edge);
+  }
+  .rows li:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+  .rows .cmd {
+    justify-self: start;
+    background: var(--tan);
+  }
+  .more {
+    display: inline-block;
+    margin-top: 1.1rem;
+    font-weight: 700;
+  }
+  .card--translate .cmd,
+  .card--mod .cmd {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  @media (max-width: 62rem) {
+    .grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  @media (max-width: 34rem) {
+    .rows li {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .rows .cmd {
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
+  }
+</style>

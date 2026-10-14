@@ -1,0 +1,164 @@
+---
+---
+
+<section class="translate" id="translate">
+  <div class="wrap translate__grid">
+    <div class="translate__copy">
+      <h2>Talk across languages without leaving the channel</h2>
+      <p class="lede">
+        Run <code class="cmd">/translate chinese</code> in a channel and Yu translates each message between
+        English and Chinese as people post. Use <code class="cmd">japanese</code> for Japanese.
+      </p>
+      <ul class="how">
+        <li>
+          <code class="cmd">/translate japanese Hello!</code>
+          <span>Translate one message and stop there.</span>
+        </li>
+        <li>
+          <code class="cmd">/translate off</code>
+          <span>Turn translation off in the current channel.</span>
+        </li>
+      </ul>
+      <p class="fine">Translation runs on DeepL. You bring the API key, and each channel keeps its own language.</p>
+    </div>
+
+    <div class="channel" role="img" aria-label="Example channel: Yu translates an English question into Chinese and a Chinese reply into English.">
+      <div class="channel__bar"># cafe-chat</div>
+      <div class="channel__log" aria-hidden="true">
+        <div class="m">
+          <span class="who">You</span>
+          <span class="cmd">/translate chinese</span>
+        </div>
+        <div class="m m--yu">
+          <span class="who">Yu Perennia <span class="app">APP</span></span>
+          <p>Order received! Yu will translate between English and Chinese in this channel! 🍵</p>
+        </div>
+        <div class="m">
+          <span class="who">mika</span>
+          <p class="plain">Is the shop open today?</p>
+        </div>
+        <div class="m m--yu">
+          <span class="who">Yu Perennia <span class="app">APP</span></span>
+          <p>mika : 店今天开门吗？</p>
+        </div>
+        <div class="m">
+          <span class="who">lin</span>
+          <p class="plain">开门啦，快进来！</p>
+        </div>
+        <div class="m m--yu">
+          <span class="who">Yu Perennia <span class="app">APP</span></span>
+          <p>lin : It's open, come on in!</p>
+        </div>
+      </div>
+      <div class="channel__foot">Example conversation</div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .translate {
+    --edge: var(--paper);
+    --shadow-color: var(--ink);
+    --focus: var(--paper);
+    background: var(--cocoa);
+    color: var(--paper);
+    padding-block: clamp(3.5rem, 8vw, 6.5rem);
+    border-bottom: 3px solid var(--ink);
+  }
+  .translate__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+    gap: clamp(2rem, 5vw, 4.5rem);
+    align-items: center;
+  }
+  .translate h2 {
+    max-width: 14ch;
+  }
+  .how {
+    list-style: none;
+    margin: 2rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 1rem;
+  }
+  .how li {
+    display: grid;
+    gap: 0.35rem;
+    justify-items: start;
+  }
+  .how .cmd {
+    border-color: var(--ink);
+  }
+  .fine {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 3px solid var(--paper);
+    font-size: 1rem;
+  }
+
+  .channel {
+    background: var(--paper);
+    color: var(--ink);
+    border: 3px solid var(--ink);
+    box-shadow: 10px 10px 0 var(--ink);
+  }
+  .channel__bar {
+    padding: 0.75rem 1.1rem;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--font-mono);
+    font-weight: 500;
+  }
+  .channel__log {
+    display: grid;
+    gap: 1rem;
+    padding: 1.25rem;
+    background: var(--mist);
+  }
+  .m {
+    display: grid;
+    gap: 0.25rem;
+    justify-items: start;
+  }
+  .who {
+    font-weight: 750;
+    font-size: 0.95rem;
+  }
+  .app {
+    display: inline-block;
+    margin-left: 0.3rem;
+    padding: 0 0.35rem;
+    background: var(--ink);
+    color: var(--paper);
+    font-size: 0.7rem;
+    font-weight: 750;
+    vertical-align: 0.1em;
+  }
+  .m p {
+    padding: 0.55rem 0.8rem;
+    border: 3px solid var(--ink);
+    background: var(--paper);
+    box-shadow: 3px 3px 0 var(--ink);
+    font-size: 1.02rem;
+    line-height: 1.4;
+  }
+  .m p.plain {
+    background: var(--tan);
+  }
+  .channel .cmd {
+    border-color: var(--ink);
+    background: var(--paper);
+  }
+  .channel__foot {
+    padding: 0.6rem 1.1rem;
+    border-top: 3px solid var(--ink);
+    color: var(--cocoa);
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 62rem) {
+    .translate__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

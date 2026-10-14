@@ -1,0 +1,34 @@
+---
+import '@fontsource-variable/bricolage-grotesque/wdth.css';
+import '@fontsource/dm-mono/400.css';
+import '@fontsource/dm-mono/500.css';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'Yu Perennia, a Discord bot for translation, dice and moderation',
+  description = 'Yu Perennia is a Discord bot that translates your chat between English and Chinese or Japanese, rolls dice, answers 8-ball questions, and kicks troublemakers.',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#b9a594" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
