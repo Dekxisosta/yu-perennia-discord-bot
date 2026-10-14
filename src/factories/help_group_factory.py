@@ -1,10 +1,10 @@
 import discord
-from models.help_model import HelpGroup
+from model.help_model import CommandHelpGroup as HelpGroup
 
 def create_group(desc: str, commands: dict,group_prefix: str | None = None):
     embed = discord.Embed(
-        title="🪻 **Rice Shower Bot Commands**",
-        description="Here are all the things Rice can help you with, Trainer-san!",
+        title="🌸 **Yu Perennia Bot Commands**",
+        description="Here are all the things Yu can help you with!",
         color=discord.Color.dark_magenta()
     )
     if group_prefix is not None:

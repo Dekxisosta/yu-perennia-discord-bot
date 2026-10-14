@@ -11,3 +11,5 @@ __pycache__/
 
 #Ignore logs
 *.log
+#Ignore saved translate settings
+data/

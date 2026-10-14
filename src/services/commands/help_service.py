@@ -15,14 +15,8 @@ async def help(ctx: commands.Context, bot_prefix: str, config: dict):
             group_prefix=config["mod"]["prefix"]
         ),
         create_help_group(
-            desc=config["automod"]["desc"],
-            commands=config["automod"]["commands"],
-            group_prefix=config["automod"]["prefix"]
-        ),
-        create_help_group(
             desc=config["utility"]["desc"],
             commands=config["utility"]["commands"],
-            group_prefix=config["utility"]["prefix"]
         )
     ]
     

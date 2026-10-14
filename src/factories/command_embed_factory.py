@@ -34,7 +34,7 @@ def create(
         )
 
     embed.set_footer(
-        text="Rice Shower Bot • General Commands"
+        text="Yu Perennia Bot • General Commands"
     )
 
     return embed

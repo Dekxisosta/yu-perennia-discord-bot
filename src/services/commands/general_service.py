@@ -6,7 +6,7 @@ import random
 async def greet(ctx: commands.Context, greetings: list[str]):
     await send_message(ctx=ctx, msg=random.choice(greetings), delete_invoke=True)
 
-# Ping Command : Shows Rice Shower's response time
+# Ping Command : Shows Yu Perennia's response time
 async def ping(bot, ctx: commands.Context, format: str):
     await send_message(ctx=ctx, msg=format.format(round(bot.latency*1000)), delete_invoke=True)
 
@@ -14,15 +14,15 @@ async def ping(bot, ctx: commands.Context, format: str):
 async def info(ctx:commands.Context, info: str):
     await send_message(ctx=ctx, msg=info, delete_invoke=True)
 
-# Quote Command : Randomly says whatever quote that is unique to Rice Shower's traits
+# Quote Command : Randomly says whatever quote that is unique to Yu Perennia's traits
 async def quote(ctx:commands.Context, quotes: list[str]):
     await send_message(ctx=ctx, msg=random.choice(quotes), delete_invoke=True)
 
-# Umaline Command : Randomly says an in-game Rice Shower voiceline as text
+# Umaline Command : Randomly says a Yu Perennia voiceline as text
 async def umaline(ctx:commands.Context, textlines: list[str]):
     await send_message(ctx=ctx, msg=random.choice(textlines), delete_invoke=True)
 
-# Say Command : Says the message the user wants Rice Shower to say
+# Say Command : Says the message the user wants Yu Perennia to say
 async def say(ctx:commands.Context, msg: str):
     await send_message(ctx=ctx, msg=msg, delete_invoke=True)
 

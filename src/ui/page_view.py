@@ -1,7 +1,7 @@
 import discord
 from discord.ui import View
 from ui.page_dropdown import PageDropdown
-from models.help_model import HelpGroup
+from model.help_model import CommandHelpGroup as HelpGroup
 
 class PageView(View):
     def __init__(self, groups: list[HelpGroup]):
