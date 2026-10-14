@@ -14,7 +14,7 @@ class OnMessage(commands.Cog):
         
     #     content = msg.content.lower()
         
-    #     if "rice shower" in content and any(g in content for g in HOOKS):
+    #     if "yu perennia" in content and any(g in content for g in HOOKS):
     #         if db.callout_line_count >= len(LINES):
     #             db.callout_line_count=0
 
