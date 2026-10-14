@@ -1,3 +1,4 @@
-SYSTEM_NAME = "ライス"
-VERSION = "0.0.1"
+SYSTEM_NAME = "YuPerennia"
+VERSION = "0.0.18"
+
 
