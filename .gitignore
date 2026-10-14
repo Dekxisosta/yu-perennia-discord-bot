@@ -11,5 +11,6 @@ __pycache__/
 
 #Ignore logs
 *.log
-#Ignore saved translate settings
-data/
+#Ignore saved translate settings (bot runtime data only)
+/data/
+src/data/
