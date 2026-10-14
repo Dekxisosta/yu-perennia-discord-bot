@@ -1,0 +1,17 @@
+command:
+    format: "{flag} {text}"
+    channel-set: "Order received! Yu will translate between English and {language} {flag} in this channel! 🍵"
+    channel-off: "Understood! Translation is off in this channel. Yu's putting the tray away! 🛎️"
+    server-only: "Oh, that only works inside a server channel! Please try again over there!"
+    unknown-language: "Sorry, that's not on the menu! Yu knows Chinese and Japanese. Or say Off to stop!"
+    off-with-text: "Hm? Off is just for turning translation off in a channel. It can't translate text!"
+    empty: "Hm? The tray's empty! There's nothing here for Yu to translate!"
+    unsupported: "Sorry, Yu couldn't find any text to translate in that! Mind checking it?"
+    not-configured: "Oh no, translation isn't set up yet! Yu needs a DeepL key before she can start serving!"
+    quota: "Oh no, this month's translation quota has run out! Yu's all out of stock!"
+    rate-limit: "Whoa, too many orders at once! Give Yu a moment to catch up! 🐐"
+    failed: "Oops, that translation didn't come out right! Yu will do better, so please try again!"
+
+auto:
+    # placeholders: {username} {text} {flag} {language}
+    format: "{username} : {text}"
