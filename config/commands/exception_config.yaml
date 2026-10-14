@@ -1,3 +1,3 @@
-invalid_command: "Unable to perform command for command. Check `!{prefix} help` or `/{prefix} help` for available commands!"
-missing_argument: "You forgot to provide an argument for `{command}`!"
-no_permission: "You do not have permission to use `{command}`."
+invalid_command: "Sorry, that's not on the menu! Check `!{prefix} help` or `/{prefix} help` to see what Yu can do!"
+missing_argument: "Oh, your order's missing something! Yu needs an argument for `{command}`!"
+no_permission: "Sorry, Yu can't let you use `{command}`. That one's staff only!"

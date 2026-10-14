@@ -1,99 +1,14 @@
-desc: "U-um… Rice can help with small tasks and useful tools…!"
+desc: "Welcome in! Yu has a few handy tools ready for you!"
 prefix: "util"
 
 commands:
-    remind:
-        usage: "/remind or rs!util remind"
-        more-desc: "Sets a reminder for a user for a specified time and message."
-        usage: "/remind <time> <message> | rs!util remind <time> <message>"
-        user-perms:
-            - view_channel
-            - send_messages
-        bot-perms:
-            - view_channel
-            - send_messages
-        desc: "Gently reminds users of important tasks or events…!"
-
-    timer:
-        usage: "/timer or rs!util timer"
-        more-desc: "Starts a countdown timer for a specified duration."
-        usage: "/timer <duration> | rs!util timer <duration>"
-        user-perms:
-            - view_channel
-            - send_messages
-        bot-perms:
-            - view_channel
-            - send_messages
-        desc: "Helps users keep track of time…!"
-
     translate:
-        usage: "/translate or rs!util translate"
-        more-desc: "Translates text from one language to another."
-        usage: "/translate <text> <language> | rs!util translate <text> <language>"
+        usage: "/translate <language> [text] | yp!translate <language> [text]"
+        more-desc: "Sets this channel to auto-translate between English and Chinese or Japanese (or Off). Add text to translate it once instead."
         user-perms:
             - view_channel
             - send_messages
         bot-perms:
             - view_channel
             - send_messages
-        desc: "Translates messages so everyone can understand…!"
-
-    color:
-        usage: "/color or rs!util color"
-        more-desc: "Displays color information from hex codes or names."
-        usage: "/color <hex/code> | rs!util color <hex/code>"
-        user-perms:
-            - view_channel
-            - send_messages
-        bot-perms:
-            - view_channel
-            - send_messages
-        desc: "Shows Rice's colorful side…!"
-
-    suggest:
-        usage: "/suggest or rs!util suggest"
-        more-desc: "Sends a suggestion for the server or bot improvements."
-        usage: "/suggest <suggestion> | rs!util suggest <suggestion>"
-        user-perms:
-            - view_channel
-            - send_messages
-        bot-perms:
-            - view_channel
-            - send_messages
-        desc: "Allows users to share helpful suggestions…!"
-
-    report:
-        usage: "/report or rs!util report"
-        more-desc: "Reports a user or issue to the moderators."
-        usage: "/report <user/issue> | rs!util report <user/issue>"
-        user-perms:
-            - view_channel
-            - send_messages
-        bot-perms:
-            - view_channel
-            - send_messages
-        desc: "Gently notifies moderators of problems…!"
-
-    quote:
-        usage: "/quote or rs!util quote"
-        more-desc: "Fetches a random quote or a specific quote by ID."
-        usage: "/quote [id] | rs!util quote [id]"
-        user-perms:
-            - view_channel
-            - send_messages
-        bot-perms:
-            - view_channel
-            - send_messages
-        desc: "Shares wisdom, inspiration, or fun quotes…!"
-
-    todo:
-        usage: "/todo or rs!util todo"
-        more-desc: "Manages a personal to-do list for the user."
-        usage: "/todo <add/remove/list> <task> | rs!util todo <add/remove/list> <task>"
-        user-perms:
-            - view_channel
-            - send_messages
-        bot-perms:
-            - view_channel
-            - send_messages
-        desc: "Helps users keep track of tasks…!"
+        desc: "Yu translates for you, so everyone at the table can understand each other! 🍵"

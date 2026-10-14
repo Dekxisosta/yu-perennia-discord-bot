@@ -1,103 +1,12 @@
-desc: "Rice will gently help keep the server safe from trouble…!"
+desc: "Yu will hold the line and keep the server safe from trouble…!"
 prefix: "mod"
 
 commands:
   kick:
-    usage: "/kick or rs!mod kick"
-    more-desc: "Kicks a user from the server. Rice ensures this action is safe and justified."
-    usage: "/kick <user> | rs!mod kick <user>"
+    desc: "Kicks a user from the server with proper authorization."
+    usage: "/kick <user> | yp!mod kick <user>"
+    more-desc: "Kicks a user from the server. Yu ensures this action is safe and justified."
     user-perms:
-        - kick_members
+      - kick_members
     bot-perms:
-        - kick_members
-    desc: "Removes a member from the server… gently!"
-
-  ban:
-    usage: "/ban or rs!mod ban"
-    more-desc: "Bans a user from the server, preventing them from returning unless unbanned."
-    usage: "/ban <user> | rs!mod ban <user>"
-    user-perms:
-        - ban_members
-    bot-perms:
-        - ban_members
-    desc: "Keeps Rice safe by banning troublesome members…!"
-
-  unban:
-    usage: "/unban or rs!mod unban"
-    more-desc: "Unbans a previously banned user, allowing them back into the server."
-    usage: "/unban <user> | rs!mod unban <user>"
-    user-perms:
-        - ban_members
-    bot-perms:
-        - ban_members
-    desc: "Welcomes back a member previously banned…!"
-
-  timeout:
-    usage: "/timeout or rs!mod timeout"
-    more-desc: "Temporarily restricts a user's ability to send messages or interact in the server."
-    usage: "/timeout <user> <duration> | rs!mod timeout <user> <duration>"
-    user-perms:
-        - moderate_members
-    bot-perms:
-        - moderate_members
-    desc: "Gently puts a member in timeout…!"
-
-  warn:
-    usage: "/warn or rs!mod warn"
-    more-desc: "Issues a warning to a user for misbehavior. Rice tracks this to maintain order."
-    usage: "/warn <user> <reason> | rs!mod warn <user> <reason>"
-    user-perms:
-        - moderate_members
-    bot-perms:
-        - moderate_members
-    desc: "Warns a member without immediate harsh actions…!"
-
-  warnings:
-    usage: "/warnings or rs!mod warnings"
-    more-desc: "Displays the list of warnings a user has received."
-    usage: "/warnings <user> | rs!mod warnings <user>"
-    user-perms:
-        - view_audit_log
-    bot-perms:
-        - view_audit_log
-    desc: "Shows Rice's record of a member's warnings…!"
-
-  purge:
-    usage: "/purge or rs!mod purge"
-    more-desc: "Deletes a number of recent messages in a channel for quick cleanup."
-    usage: "/purge <amount> | rs!mod purge <amount>"
-    user-perms:
-        - manage_messages
-    bot-perms:
-        - manage_messages
-    desc: "Cleans up the chat swiftly…!"
-
-  lock:
-    usage: "/lock or rs!mod lock"
-    more-desc: "Prevents members from sending messages in a channel temporarily."
-    usage: "/lock <channel> | rs!mod lock <channel>"
-    user-perms:
-        - manage_channels
-    bot-perms:
-        - manage_channels
-    desc: "Locks a channel to keep things under control…!"
-
-  unlock:
-    usage: "/unlock or rs!mod unlock"
-    more-desc: "Restores the ability to send messages in a previously locked channel."
-    usage: "/unlock <channel> | rs!mod unlock <channel>"
-    user-perms:
-        - manage_channels
-    bot-perms:
-        - manage_channels
-    desc: "Unlocks a channel so members can chat again…!"
-
-  slowmode:
-    usage: "/slowmode or rs!mod slowmode"
-    more-desc: "Sets a slowmode for a channel, limiting how often members can send messages."
-    usage: "/slowmode <duration> | rs!mod slowmode <duration>"
-    user-perms:
-        - manage_channels
-    bot-perms:
-        - manage_channels
-    desc: "Slows down the chat to keep conversations manageable…!"
+      - kick_members

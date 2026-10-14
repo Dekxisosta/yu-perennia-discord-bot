@@ -1,199 +1,133 @@
-desc: "U-um… Rice helps with simple commands and everyday server tasks…!"
-more-desc: "Provides essential utilities for common server tasks and basic interactions, allowing Rice to assist efficiently."
+# Yu Perennia voicelines, drop-in replacements for the Rice Shower configs.
+# Placeholders match the originals. Keep them intact.
+
+# ---------- general_config.yaml ----------
+desc: "Welcome in! Yu can help with all sorts of everyday server tasks!"
+more-desc: "Provides essential utilities for common server tasks and basic interactions, with Yu serving them up nice and warm."
 
 commands:
-    greet: 
-        usage: "/greet or rs!greet"
-        user-perms: 
-            - view_channel
-            - send_messages
-        bot-perms:
-            - view_channel
-            - send_messages
-        desc: "Rice is here to say hello…! I-I hope you're having a good day…!"
+    greet:
+        usage: "/greet or yp!greet"
+        desc: "Yu greets you like a regular at Cafe Camellia!"
         textlines:
-            - "Um… h-hello… 🌹"
-            - "Oh… hi… 🌸"
-            - "H-hey… it's Rice… 🌾"
-            - "Hello… um… 😳"
-            - "Hi… nice to see you… ✨"
-            - "Oh… hello there… 🌷"
-            - "Um… hi hi… 🍀"
-            - "Hey… um… 💛"
-            - "H-hello… hehe… 🌼"
-            - "Hi… I'm here… 🌙"
-            - "Oh… um… hello… 🌸"
-            - "Hi… glad you're here… 🌹"
-            - "Hello… um… 🌾"
-            - "H-hey there… 😅"
-            - "Hi… um… hello… ⭐"
-            - "Um… hi… it's nice to meet you… 🌷"
-            - "Oh… hello… I didn't keep you waiting, right? 😳"
-            - "H-hello… um… good day… 🌼"
-            - "Hi… um… I hope today goes well… 🍀"
-            - "Oh… hi hi… sorry… 🌸"
-            - "Hello… um… thank you for coming… 🌹"
-            - "H-hey… um… hi… 🌾"
-            - "Hi… I-I'm happy you're here… 💛"
-            - "Oh… hello… let's… um… get along… 🌷"
-            - "Um… hi… hehe… 🌼"
-            - "Hello… it's Rice… 🌹"
-            - "H-hello… um… take your time… 🌙"
-            - "Hi… um… welcome… 🍀"
-            - "Oh… hi… I was just… um… here… 😳"
-            - "Hello… um… nice timing… 🌸"
-    help: 
-        desc: "Shows all available commands and what Rice can do…!"
-        usage: "/help or rs!help"
-        more-desc: "Shows detailed information about all commands Rice can execute, including usage and descriptions."
-        user-perms:
-            - view_channel
-            - send_messages
-        bot-perms:
-            - view_channel
-            - send_messages
-    ping: 
-        desc: "Checks Rice's response time to see if she's fast enough…!"
-        usage: "/ping or rs!ping"
-        more-desc: "Measures Rice's current latency and returns the response time in milliseconds."
-        user-perms:
-            - view_channel
-            - send_messages
-        bot-perms:
-            - view_channel
-            - send_messages
-        format: "P-pong! 🏓 Latency is {}ms."
-        
-    info: 
-        more-desc: "Returns general information about Rice Shower, including its capabilities and current command support."
-        desc: "Provides information about Rice Shower bot and her features…!"
-        usage: "/info or rs!info"
-        text: "Rice Shower is a user-friendly server bot designed to assist with everyday server tasks. She currently supports general commands, including **greetings**, **informational queries**, **dice rolls**, **coin flips**, **motivational quotes**, **message repetition**, and **random selection**. These commands allow users to interact easily with the bot and streamline common server activities."
-        user-perms:
-            - view_channel
-            - send_messages
-        bot-perms:
-            - view_channel
-            - send_messages
-    quote: 
+            - "Welcome in! Take any seat you like! ☕"
+            - "Oh, hello! Perfect timing, the tea just finished steeping! 🌸"
+            - "Hi hi! Yu Perennia, at your service! 🐐"
+            - "Welcome to Cafe Camellia! ...Er, the server! Same thing, really! 🌼"
+            - "Good to see you! Come in, come in, don't be shy! ✨"
+            - "Hello, hello! Careful of the tray, it's hot! 🍵"
+            - "Hey there! 6th Division's doors are always open! 🛡️"
+            - "Baa-rilliant to see you! Hehe, sorry, couldn't resist! 💛"
+            - "Oh! Hi! I was just wiping the tables. All clean now! 🌷"
+            - "Welcome back! Your usual seat is waiting! 🌹"
+
+    help:
+        desc: "Yu shows you the menu of everything she can do!"
+        more-desc: "Shows detailed information about all commands Yu can run, including usage and descriptions."
+
+    ping:
+        desc: "Yu checks how quickly she can deliver an order!"
+        more-desc: "Measures Yu's current latency and returns the response time in milliseconds."
+        format: "Order up! 🛎️ Latency is {}ms. Fresh and fast!"
+
+    info:
+        desc: "Yu tells you about herself and what she can do!"
+        more-desc: "Returns general information about Yu Perennia, including her capabilities and current command support."
+        text: "Yu Perennia is a cheerful goat demihuman who waits tables at Cafe Camellia and holds the line as a tank-supporter, and dependable acting leader, in NCC's 6th Division. She currently supports general commands, including **greetings**, **informational queries**, **dice rolls**, **coin flips**, **motivational quotes**, **message repetition**, and **random selection**. Leave it to her. She's sturdier than she looks!"
+
+    quote:
+        desc: "Yu serves you a little encouragement, on the house!"
         more-desc: "Provides a randomly selected motivational or encouraging message to support and uplift the user."
-        desc: "Gives a random cute or motivational quote to cheer you up…!"
-        usage: "/quote or rs!quote"
-        user-perms:
-            - view_channel
-            - send_messages
-        bot-perms:
-            - view_channel
-            - send_messages
         textlines:
-            - "Um... it's okay to go at your own pace... 🌱"
-            - "Even small steps... still count... 🌾"
-            - "I-I believe... you're doing your best... 💛"
-            - "It's okay to be scared... I am too... 🍀"
-            - "Trying is already... something amazing... ✨"
-            - "You don't have to hurry... 🐌"
-            - "Even quiet efforts... shine brightly... 🌟"
-            - "I think... today will be okay... 🌷"
-            - "You're not alone... I'm cheering for you... 🌹"
-            - "Doing your best... is enough... 💞"
-            - "It's alright to rest... when you need to... 🌙"
-            - "I-I think... you're stronger than you know... 🍀"
-            - "Little by little... we'll get there... 🌱"
-            - "Being kind... is a real strength... 💐"
-            - "Even mistakes... help us grow... 🌼"
-            - "I believe... tomorrow can be better... ⭐"
-            - "You don't need to compare... just keep going... 🌾"
-            - "Your effort... really matters... 💛"
-            - "It's okay to feel unsure... just don't give up... 🌸"
-            - "I'll... keep cheering for you... always... 🌹"
+            - "Stay behind me! You don't have to carry it all by yourself! 🛡️"
+            - "A good cup of tea fixes more than you'd think. Take a break! 🍵"
+            - "Falling down is fine. Getting back up with friends is better! 🌸"
+            - "Nobody gets left behind. That includes you! 💛"
+            - "Small steps still get you across the room. Just don't spill the tea! ☕"
+            - "If it gets tough, fall back to me. I've got you covered! 🐐"
+            - "Being dependable isn't about never being tired. It's about showing up anyway! 🌼"
+            - "You're doing great! ...And if not, tea's on me! ✨"
+            - "Rest when you need to. The line will hold! 🌷"
+            - "Every hard day ends. Then comes cake! 🍰"
+
+    # Rice's umaline pulled lines from Uma Musume. Yu has no equivalent, so this
+    # could be renamed (e.g. "yuline") and filled with these:
     umaline:
-        desc: "Makes Rice say a random in-game line...!"
-        more-desc: "Displays a randomly selected prewritten line or dialogue from Rice's in-game content in Uma Musume: Pretty Derby."
-        usage: "/umaline or rs!umaline"
-        user-perms:
-            - view_channel
-            - send_messages
-        bot-perms:
-            - view_channel
-            - send_messages
+        desc: "Makes Yu say a random line from her day!"
+        more-desc: "Displays a randomly selected prewritten line from Yu's daily life at Cafe Camellia and the 6th Division."
         textlines:
-            - "🥕 Whenever I try to cross the street, the walk signal always turns red... That's why I try not to walk beside anybody else."
-            - "🥕 I wonder why Maruzen invites me on drives... We even got stuck in a traffic jam last time... She's so kind..."
-            - "🥕 You know, I don't... hate everything about myself anymore."
-            - "🥕 B-Big Brother! Um, it looks like there might be a new notice!"
-            - "🥕 When I clean today, I'll try not to spill any water... That way, everyone won't slip!"
-            - "🥕 H-huh? Bakushin O was there just a second ago... Is this the 'power of the Bakushin' she mentioned?"
-            - "🥕 Tonight is the night I'm going to tell Rob Roy, \"I like that book too.\"... T-tonight is the night!"
-            - "🥕 Everyday, little by little, I'm getting closer to becoming the me I want to be... I think."
-            - "🥕 Ow... Since I'm wearing this outfit, I thought I'd try walking without looking down, but I bumped my knee..."
-    say: 
-        usage: "/say or rs!say"
-        more-desc: "Echoes the message typed by the user, allowing Rice to relay it exactly as entered. Say command cannot bypass filtered words"
-        usage: "/say <message> | {prefix}say <message>"
-        user-perms:
-            - view_channel
-            - send_messages
-        bot-perms:
-            - view_channel
-            - send_messages
-        desc: "Makes Rice repeat whatever you tell her to say…!"
+            - "🐐 The tables are wiped, the cups are polished... I should check the division's supply list before my break."
+            - "🐐 Ehehe, sorry, I was chewing on... nothing! Definitely not the menu. Baa..."
+            - "🐐 Acting leader means everyone's tea order AND everyone's safety. It's a lot, but I like it!"
+            - "🐐 One pot of tea and a slice of cake, coming right up! Please wait just a moment!"
+            - "🐐 I'm much sturdier than I look. Go on, give it your best shot!"
+            - "🐐 After this mission, everyone's coming to the cafe. That's an order! ...A friendly one!"
+            - "🐐 Honey cake sells out so fast. I always save one slice for the division!"
+
+    say:
+        desc: "Makes Yu repeat whatever you tell her to say!"
+        more-desc: "Echoes the message typed by the user, allowing Yu to relay it exactly as entered. Say command cannot bypass filtered words"
+
     roll:
-        usage: "/roll or rs!roll"
+        desc: "Yu rolls a die and calls out the result!"
         more-desc: "Simulates a dice roll and outputs the result as a number."
-        user-perms:
-            - view_channel
-            - send_messages
-        bot-perms:
-            - view_channel
-            - send_messages
-        desc: "Makes Rice roll a die and tell you the result!"
-        format: "Rolled {outcome}!"
+        format: "Rolled a {outcome}! Order up! 🎲"
 
     8ball:
-        usage: "/8ball <question> or rs!8ball <question>"
+        desc: "Ask Yu a question and she'll give you her honest answer!"
         more-desc: "Provides a randomized answer to a user-submitted question, simulating a magic 8-ball response. Does not use AI"
-        user-perms:
-            - view_channel
-            - send_messages
-        bot-perms:
-            - view_channel
-            - send_messages
-        desc: "Ask Rice a question, and she'll answer with her honest feelings…!"
-        format-response: "🥕Response: {response}"
+        format-response: "🐐Response: {response}"
         format-question: "❓Question: {question}"
         textlines:
-            - "Yes..!"
-            - "Most likely..!"
-            - "Definitely..!"
-            - "Ask again later… I'll try to know more!"
-            - "Hmm… I'm not sure yet."
-            - "Cannot predict now… but I'll try!"
-            - "No, I can't guarantee that!"
-            - "Very doubtful…"
-            - "Don't count on it…"
+            - "Yes! Leave it to me!"
+            - "Most likely! I've got a good feeling!"
+            - "Definitely! Hold the line!"
+            - "Hmm, ask again once the tea has cooled!"
+            - "I'm not sure yet. Give me a moment to think!"
+            - "Can't say right now, but we'll figure it out together!"
+            - "No, I can't promise that, sorry!"
+            - "Very doubtful... but I'd still stand by you!"
+            - "Don't count on it. Let's try a different plan!"
+
     coinflip:
-        usage: "/coinflip or rs!coinflip"
+        desc: "Yu flips a coin and tells you the result!"
         more-desc: "Simulates a coin toss and outputs whether it landed on heads or tails."
-        user-perms:
-            - view_channel
-            - send_messages
-        bot-perms:
-            - view_channel
-            - send_messages
-        desc: "Rice flips a coin and tells you the result!"
-        format: "It landed on {outcome}!"
+        format: "It landed on {outcome}! Catch! 🪙"
 
     choose:
-        usage: "/choose <choice1|choice2|choice3> or rs!choose <choice1,choice2,choice3>"
-        desc: "Let Rice choose between multiple options for you!"
+        desc: "Let Yu pick for you, like a waitress recommending a dish!"
         more-desc: "Selects one option from multiple user-provided choices and outputs the selected result.\nUser can use | or , with | being more dominant than ,"
-        user-perms:
-            - view_channel
-            - send_messages
-        bot-perms:
-            - view_channel
-            - send_messages
-        usage: "!choose option 1, option 2 | option 3"
-        fallback: "Um… I need at least two options to choose from!"
-        format: "I think I'll pick **{0}**!"
-        
+        fallback: "Hm? I need at least two options to choose from!"
+        format: "I recommend **{0}**! You won't regret it!"
+
+# ---------- exception_config.yaml ----------
+invalid_command: "Sorry, that's not on the menu! Check `!{prefix} help` or `/{prefix} help` for what I can do!"
+missing_argument: "Oh, you forgot to give me something for `{command}`! Mind adding it?"
+no_permission: "Sorry, I can't let you use `{command}`. Staff only!"
+
+# ---------- translate_config.yaml ----------
+command:
+    format: "{flag} {text}"
+    channel-set: "Got it! Yu will translate between English and {language} {flag} in this channel!"
+    channel-off: "Okay, Yu will stop translating in this channel!"
+    server-only: "Oh, changing translation only works inside a server channel!"
+    unknown-language: "Yu knows Chinese and Japanese. Or say Off to stop!"
+    off-with-text: "Off is only for turning translation off in a channel, not for translating text!"
+    empty: "Hm? There's nothing here for me to translate!"
+    unsupported: "Sorry, I couldn't find any text to translate in that!"
+    not-configured: "Sorry, translation isn't set up yet. I need a DeepL key first!"
+    quota: "Oh no, this month's translation quota has run out!"
+    rate-limit: "Whoa, too many orders at once! Try again in a moment!"
+    failed: "Sorry, that translation didn't come out right. Please try again!"
+
+# ---------- mod_config.yaml ----------
+mod_desc: "Yu will hold the line and keep the server safe!"
+commands_mod:
+    kick:
+        more-desc: "Kicks a user from the server. Yu makes sure this is safe and justified before she does it."
+
+# ---------- events (on_member_join / battle-style extras, optional) ----------
+member_join:
+    - "Welcome to the server! Take any seat you like! ☕"
+    - "A new face! Come in, come in! Tea's on me! 🍵"
+    - "Welcome aboard! The 6th Division's got room for one more! 🛡️"
