@@ -9,6 +9,10 @@ sys.path.insert(0, str(src_dir))
 sys.path.insert(0, str(project_root))
 
 from core import logger_loader, config_loader, bot_loader
+from health_server import start_health_server
+
+# Start health check server for Render
+start_health_server()
 
 logger_loader.load()
 config_loader.load()
