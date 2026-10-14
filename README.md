@@ -1,52 +1,230 @@
-<table width="100%">
-  <tr>
-    <td align="center" min-width="150">
-      <img src="docs/images/rice-shower.png" alt="Status" width="150" height="150" />
-    </td>
-    <td align="left">
-      <pre>
- █████▄  ▄▄  ▄▄▄▄ ▄▄▄▄▄   ▄█████ ▄▄ ▄▄  ▄▄▄  ▄▄   ▄▄ ▄▄▄▄▄ ▄▄▄▄    In early development!
- ██▄▄██▄ ██ ██▀▀▀ ██▄▄    ▀▀▀▄▄▄ ██▄██ ██▀██ ██ ▄ ██ ██▄▄  ██▄█▄   ---------------------
- ██   ██ ██ ▀████ ██▄▄▄   █████▀ ██ ██ ▀███▀  ▀█▀█▀  ██▄▄▄ ██ ██   version 0.0.18
-<strong> DISCORD BOT made with Discord.py                                                     🥕</tr>
-</table>
+ <div align="center">
 
-Rice Shower Bot is your all-in-one Discord companion, 
-featuring Uma Musume-inspired mini-games where you can train and race your horses, 
-along with tools to manage and moderate your server, and fun commands to keep everyone entertained. 
-Fast, reliable, and ready to make your server lively!
+# ☕ Yu Perennia
 
-![Discord.py](https://img.shields.io/badge/Discord.py-2.4-5865F2?style=flat-square&logo=discord&logoColor=white)
-[![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=fff)](#)
-[![Visual Studio Code](https://custom-icon-badges.demolab.com/badge/Visual%20Studio%20Code-0078d7.svg?logo=vsc&logoColor=white)](#)
-![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)
-![Status](https://img.shields.io/badge/Status-On%20Hold-yellow)
+**A cheerful, modular Discord bot ready to serve your community.**
 
-## Author's Note
-I will move to making other projects for now. By the time I'm writing this section, I realized I have no need for a personalized discord bot yet.
-However, if the need arises or a number of people have pushed for such bot to function, then I will work on this project again
+[![discord.py](https://img.shields.io/badge/discord.py-2.4.0-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discordpy.readthedocs.io/)
+[![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![DeepL](https://img.shields.io/badge/DeepL-Translation-0F2B46?style=for-the-badge&logo=deepl&logoColor=white)](https://www.deepl.com/)
+[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
+[![Status](https://img.shields.io/badge/Status-In_Development-yellow?style=for-the-badge)]()
 
-## Description
-A modular and scalable Discord bot framework built with Python and discord.py.
-Designed for easy extension with commands and events, centralized logging, and a clean project structure.
-Currently in early development; some package structure and features may change as the project evolves.
+<img src="docs/images/yu-perennia.png" alt="Yu Perennia" width="200" height="200" />
 
+*“Welcome in! Leave it to me!”*
 
-![What's New Banner](docs/images/whats-new_banner.png)
+*A cheerful goat demihuman from Cafe Camellia, ready to keep your server lively and lend a helping hand.*
 
-## Discord Bot Features
+</div>
 
-| Category | Description |
-|----------|-------------|
-| **General Commands** | Provides simple utility commands for everyday server tasks, fun interactions, and informational queries. Designed to be easy-to-use for both developers and users. Includes UI/UX components for an interactive experience, like buttons, menus, and embedded responses. |
-| **Moderation Commands** | Core moderation features that are actively being developed and improved, including member management, permission checks, and automated enforcement tools. Comes with UI/UX components to streamline interactions, confirmations, and status displays. |
+---
 
-## Source Code Features
+## Features
 
-| Feature | Description |
-|---------|-------------|
-| **Dynamic Autoloader** | Automatically discovers and loads commands, events, and modules from your project folders. Adding new features is as simple as creating a file—no need to touch core bot code. Ideal for modular development and fast iteration. |
-| **Centralized Logging** | Important bot actions—like startup events, module loads, and command execution—appear in the console for immediate visibility. Full activity logs, including Discord internal logs, are saved to a file for detailed debugging, monitoring, and auditing. |
-| **Configurable Settings** | Easily adjust command prefixes, intents, tokens, and logging behavior through the config folder. Supports multiple environments, so you can switch settings with minimal changes. |
-| **Reusable Utilities** | Comes with helper modules for logging, autoloading, permissions tracking, message sending, and other common tasks. These utilities make building new features or integrating external APIs faster and cleaner. |
-| **Persistent User Data** | Stores user-related information in **SQLite**, enabling commands and events to read/write persistent data efficiently, without requiring an external database server. |
+### General Commands
+
+Fun and interactive commands to engage your community.
+
+| Command | Description |
+|---|---|
+| `greet` | Receive a warm greeting from Yu. |
+| `ping` | Check the bot's latency. |
+| `info` | Learn about Yu and her capabilities. |
+| `quote` | Get an encouraging message. |
+| `say` | Make Yu repeat your message. |
+| `roll` | Roll a six-sided die. |
+| `8ball` | Ask Yu a question and receive a fortune. |
+| `coinflip` | Flip a coin. |
+| `choose` | Let Yu choose from multiple options. |
+
+### Moderation
+
+Tools to help keep your server safe and organized.
+
+| Command | Description |
+|---|---|
+| `kick` | Remove a member from the server with the appropriate permissions. |
+
+### Translation
+
+Powered by the DeepL API, Yu can help bridge language barriers in your community.
+
+- **Automatic translation:** Configure channels to translate between English and Chinese or Japanese.
+- **On-demand translation:** Translate individual messages into supported languages.
+- **Channel controls:** Enable or disable automatic translation as needed.
+
+*Translation features require a DeepL API key.*
+
+### Developer Features
+
+Designed with modularity and maintainability in mind.
+
+- **Dynamic autoloader:** Automatically discovers and loads commands and events.
+- **Centralized logging:** Console and file-based logging for debugging.
+- **YAML configuration:** Customize command settings and responses without changing application code.
+- **Modular architecture:** Separate commands, events, services, utilities, and UI components.
+- **SQLite support:** Planned persistent storage for future features.
+
+---
+
+## Requirements
+
+- Python 3.11 or later
+- `discord.py` 2.4.0 or later
+- A Discord bot token
+- A DeepL API key (optional; required for translation features)
+
+---
+
+## Getting Started
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/yourusername/yu-perennia-bot.git
+cd yu-perennia-bot
+```
+
+### 2. Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Configure Environment Variables
+
+Copy `.env.example` to `.env` and provide your credentials.
+
+```env
+DISCORD_TOKEN=your-discord-bot-token
+DEEPL_API_KEY=your-deepl-api-key
+```
+
+The DeepL API key is optional if you do not intend to use translation features.
+
+### 4. Run the Bot
+
+```bash
+python src/main.py
+```
+
+---
+
+## Usage
+
+Yu supports both **slash commands** and **prefix commands** using `yp!`.
+
+### General Commands
+
+| Slash Command | Prefix Command | Description |
+|---|---|---|
+| `/greet` | `yp!greet` | Greets the user. |
+| `/ping` | `yp!ping` | Displays bot latency. |
+| `/info` | `yp!info` | Displays bot information. |
+| `/quote` | `yp!quote` | Shares an encouraging message. |
+| `/say <message>` | `yp!say <message>` | Repeats the provided message. |
+| `/roll` | `yp!roll` | Rolls a six-sided die. |
+| `/8ball <question>` | `yp!8ball <question>` | Answers with a fortune. |
+| `/coinflip` | `yp!coinflip` | Flips a coin. |
+| `/choose <options>` | `yp!choose option1\|option2\|option3` | Chooses from the provided options. |
+
+### Moderation Commands
+
+| Slash Command | Prefix Command | Description |
+|---|---|---|
+| `/kick <user> [reason]` | `yp!mod kick <user> [reason]` | Kicks a member from the server. |
+
+### Translation Commands
+
+| Command | Description |
+|---|---|
+| `/translate chinese` | Enables automatic English–Chinese translation in the current channel. |
+| `/translate japanese Hello!` | Translates the provided text into Japanese. |
+| `/translate off` | Disables automatic translation in the current channel. |
+
+Exact command syntax may vary depending on the implemented command handlers and configuration.
+
+---
+
+## Configuration
+
+### Command Prefix
+
+Edit `config/bot_defaults.py` to change the default prefix.
+
+```python
+DEFAULT_PREFIX = "yp!"
+```
+
+### Command Settings
+
+Customize command behavior and messages through the YAML files in `config/commands/`.
+
+- `general_config.yaml` — General commands and responses.
+- `mod_config.yaml` — Moderation settings.
+- `utility_config.yaml` — Utility command settings.
+- `translate_config.yaml` — Translation settings and messages.
+
+---
+
+## Project Structure
+
+```text
+yu-perennia-bot/
+├── config/
+│   ├── commands/
+│   ├── bot_defaults.py
+│   ├── directories.py
+│   └── system_details.py
+├── src/
+│   ├── cogs/
+│   │   ├── commands/
+│   │   └── events/
+│   ├── core/
+│   ├── datastore/
+│   ├── factories/
+│   ├── services/
+│   ├── ui/
+│   ├── utils/
+│   └── main.py
+├── tests/
+├── .env.example
+├── .gitignore
+├── LICENSE
+└── requirements.txt
+```
+
+---
+
+## Contributing
+
+Contributions are welcome. You can help improve Yu by:
+
+- Reporting bugs and unexpected behavior.
+- Suggesting new features.
+- Submitting pull requests.
+
+Please ensure your changes are tested and consistent with the project's existing architecture.
+
+---
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
+
+---
+
+## Acknowledgments
+
+- [discord.py](https://discordpy.readthedocs.io/) — Python wrapper for the Discord API.
+- [DeepL](https://www.deepl.com/) — Translation API.
+- Character concept and inspiration: Yu Perennia, the goat girl waitress of Cafe Camellia.
+
+<div align="center">
+
+**Made with ☕ by Yu Perennia**
+
+*“Welcome in! Leave it to me!”* 🐐
+
+</div>
