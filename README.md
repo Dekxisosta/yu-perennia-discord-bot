@@ -10,11 +10,7 @@
 [![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
 [![Status](https://img.shields.io/badge/Status-In_Development-yellow?style=flat-square)]()
 
-<img src="docs/images/yu-perennia.png" alt="Yu Perennia" width="200" height="200" />
-
-*“Welcome in! Leave it to me!”*
-
-*A cheerful goat demihuman from Cafe Camellia, ready to keep your server lively and lend a helping hand.*
+<img src="docs/images/yu.webp" alt="Yu Perennia" width="200" height="200" />
 
 </div>
 
