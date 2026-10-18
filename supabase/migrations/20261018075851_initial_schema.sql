@@ -83,6 +83,73 @@ revoke all on function public.admin_save_config(text, text, jsonb)  from public;
 grant execute on function public.admin_list_configs(text)             to anon, authenticated;
 grant execute on function public.admin_save_config(text, text, jsonb) to anon, authenticated;
 
+-- ---------------------------------------------------------------------------
+-- Translation channels: Discord channel id -> language (zh | ja | off).
+-- The bot reads/writes this with the service role key; `label` is a free-form
+-- note for the dashboard (the website can't look up Discord channel names).
+-- ---------------------------------------------------------------------------
+create table if not exists public.translate_channels (
+  channel_id  text primary key check (channel_id ~ '^[0-9]{5,25}$'),
+  language    text not null check (language ~ '^[a-zA-Z-]{2,10}$'),
+  label       text,
+  updated_at  timestamptz not null default now()
+);
+alter table public.translate_channels enable row level security;
+
+create or replace function public.admin_list_translate_channels(p_key text)
+returns table (channel_id text, language text, label text, updated_at timestamptz)
+language plpgsql
+security definer
+set search_path = public, extensions
+as $$
+begin
+  if not public.is_admin_key(p_key) then
+    raise exception 'invalid admin key' using errcode = '28000';
+  end if;
+  return query select t.channel_id, t.language, t.label, t.updated_at
+               from public.translate_channels t order by t.updated_at desc;
+end;
+$$;
+
+create or replace function public.admin_set_translate_channel(
+  p_key text, p_channel_id text, p_language text, p_label text default null)
+returns void
+language plpgsql
+security definer
+set search_path = public, extensions
+as $$
+begin
+  if not public.is_admin_key(p_key) then
+    raise exception 'invalid admin key' using errcode = '28000';
+  end if;
+  insert into public.translate_channels (channel_id, language, label, updated_at)
+  values (p_channel_id, p_language, nullif(trim(p_label), ''), now())
+  on conflict (channel_id) do update
+    set language = excluded.language, label = excluded.label, updated_at = excluded.updated_at;
+end;
+$$;
+
+create or replace function public.admin_delete_translate_channel(p_key text, p_channel_id text)
+returns void
+language plpgsql
+security definer
+set search_path = public, extensions
+as $$
+begin
+  if not public.is_admin_key(p_key) then
+    raise exception 'invalid admin key' using errcode = '28000';
+  end if;
+  delete from public.translate_channels where channel_id = p_channel_id;
+end;
+$$;
+
+revoke all on function public.admin_list_translate_channels(text)                    from public;
+revoke all on function public.admin_set_translate_channel(text, text, text, text)    from public;
+revoke all on function public.admin_delete_translate_channel(text, text)             from public;
+grant execute on function public.admin_list_translate_channels(text)                 to anon, authenticated;
+grant execute on function public.admin_set_translate_channel(text, text, text, text) to anon, authenticated;
+grant execute on function public.admin_delete_translate_channel(text, text)          to anon, authenticated;
+
 -- Create your admin key (generate one with `openssl rand -hex 32`), then run:
 -- insert into public.admin_keys (label, key_hash)
 -- values ('main', encode(extensions.digest('PASTE-YOUR-KEY-HERE', 'sha256'), 'hex'));
