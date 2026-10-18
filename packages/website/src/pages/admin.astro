@@ -65,8 +65,44 @@ const configured = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
                     <button class="btn" type="button" id="new">New file</button>
                   </div>
                   <p class="msg" id="ed-msg" role="status"></p>
-                  <p class="hint">The bot reads these when it starts. Restart it after saving to apply changes.</p>
+                  <p class="hint">The bot reads command config when it starts. Restart it after saving to apply changes.</p>
                 </div>
+              </div>
+
+              <h2 class="sec">Translation channels</h2>
+              <div class="card chans">
+                <p class="hint">
+                  Channels where Yu auto-translates. Changes reach the bot within about a minute. Use the note to
+                  remember which channel an ID is. Discord channel IDs come from Developer Mode, then right-click a channel, then Copy Channel ID.
+                </p>
+                <div class="tablewrap">
+                  <table>
+                    <thead>
+                      <tr><th>Channel ID</th><th>Language</th><th>Note</th><th></th></tr>
+                    </thead>
+                    <tbody id="ch-body"></tbody>
+                  </table>
+                </div>
+                <form id="ch-form" class="chform" autocomplete="off">
+                  <div>
+                    <label for="ch-id">Channel ID</label>
+                    <input id="ch-id" inputmode="numeric" pattern="[0-9]{5,25}" placeholder="123456789012345678" required />
+                  </div>
+                  <div>
+                    <label for="ch-lang">Language</label>
+                    <select id="ch-lang">
+                      <option value="zh">Chinese</option>
+                      <option value="ja">Japanese</option>
+                      <option value="off">Off</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label for="ch-note">Note (optional)</label>
+                    <input id="ch-note" maxlength="60" placeholder="#general" />
+                  </div>
+                  <button class="btn btn--tan" type="submit">Add channel</button>
+                </form>
+                <p class="msg" id="ch-msg" role="status"></p>
               </div>
             </section>
           </>
@@ -278,6 +314,73 @@ const configured = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
     cursor: not-allowed;
     transform: none;
   }
+  .sec {
+    margin: 2.5rem 0 1rem;
+    font-size: clamp(2rem, 4vw, 2.75rem);
+  }
+  .tablewrap {
+    overflow-x: auto;
+    margin-top: 1rem;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 36rem;
+  }
+  th,
+  td {
+    padding: 0.5rem 0.5rem 0.5rem 0;
+    text-align: left;
+    vertical-align: middle;
+  }
+  th {
+    font-weight: 700;
+    border-bottom: var(--border);
+  }
+  td code {
+    font-size: 0.95rem;
+  }
+  select {
+    border: var(--border);
+    background: #fff8;
+    color: var(--ink);
+    font: inherit;
+    padding: 0.6rem 0.6rem;
+    border-radius: 0;
+  }
+  .rowbtn {
+    margin-right: 0.4rem;
+    padding: 0.4rem 0.8rem;
+    border: var(--border);
+    background: var(--paper);
+    color: var(--ink);
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .rowbtn:hover {
+    background: var(--tan);
+  }
+  .empty {
+    padding: 1rem 0;
+    color: var(--cocoa);
+  }
+  .chform {
+    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+    align-items: end;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: var(--border);
+  }
+  .chform > div {
+    display: grid;
+    gap: 0.4rem;
+  }
+  .chform .btn {
+    margin-top: 0;
+    min-height: 2.9rem;
+  }
   @media (max-width: 52rem) {
     .split {
       grid-template-columns: 1fr;
@@ -306,6 +409,10 @@ const configured = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
     let key = '';
     let rows: Row[] = [];
     let current: string | null = null;
+    type Chan = { channel_id: string; language: string; label: string | null; updated_at: string };
+    let chans: Chan[] = [];
+    const chBody = $('ch-body'), chMsg = $('ch-msg');
+    const LANG_NAMES: Record<string, string> = { zh: 'Chinese', ja: 'Japanese', off: 'Off' };
 
     const store = {
       get: () => { try { return sessionStorage.getItem('yu-admin-key') || ''; } catch { return ''; } },
@@ -380,8 +487,90 @@ const configured = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
       renderFiles();
     }
 
+    function renderChans() {
+      chBody.innerHTML = '';
+      if (!chans.length) {
+        const tr = chBody.appendChild(document.createElement('tr'));
+        const td = tr.appendChild(document.createElement('td'));
+        td.colSpan = 4;
+        td.className = 'empty';
+        td.textContent = 'No channels saved yet.';
+        return;
+      }
+      for (const c of chans) {
+        const tr = document.createElement('tr');
+        const idTd = document.createElement('td');
+        const code = document.createElement('code'); code.textContent = c.channel_id;
+        idTd.append(code);
+
+        const langTd = document.createElement('td');
+        const sel = document.createElement('select');
+        sel.setAttribute('aria-label', 'Language for ' + c.channel_id);
+        for (const [v, n] of Object.entries(LANG_NAMES)) {
+          const o = document.createElement('option'); o.value = v; o.textContent = n;
+          if (v === c.language) o.selected = true;
+          sel.append(o);
+        }
+        if (!(c.language in LANG_NAMES)) {
+          const o = document.createElement('option'); o.value = c.language; o.textContent = c.language; o.selected = true;
+          sel.prepend(o);
+        }
+        langTd.append(sel);
+
+        const noteTd = document.createElement('td');
+        const note = document.createElement('input');
+        note.value = c.label || ''; note.maxLength = 60;
+        note.setAttribute('aria-label', 'Note for ' + c.channel_id);
+        noteTd.append(note);
+
+        const actTd = document.createElement('td');
+        const save = document.createElement('button'); save.type = 'button'; save.className = 'rowbtn'; save.textContent = 'Save';
+        const del = document.createElement('button'); del.type = 'button'; del.className = 'rowbtn'; del.textContent = 'Remove';
+        save.addEventListener('click', () => chanAction(() => rpc('admin_set_translate_channel',
+          { p_key: key, p_channel_id: c.channel_id, p_language: sel.value, p_label: note.value }), 'Saved.'));
+        del.addEventListener('click', () => {
+          if (confirm('Remove ' + c.channel_id + '? It falls back to TRANSLATE_CHANNEL_IDS or no translation.')) {
+            chanAction(() => rpc('admin_delete_translate_channel', { p_key: key, p_channel_id: c.channel_id }), 'Removed.');
+          }
+        });
+        actTd.append(save, del);
+        tr.append(idTd, langTd, noteTd, actTd);
+        chBody.append(tr);
+      }
+    }
+
+    async function loadChans() {
+      try {
+        chans = await rpc<Chan[]>('admin_list_translate_channels', { p_key: key });
+        renderChans();
+      } catch (err) {
+        say(chMsg, (err as Error).message + ' (Did you re-run supabase/schema.sql?)', 'err');
+      }
+    }
+
+    async function chanAction(fn: () => Promise<unknown>, okText: string) {
+      say(chMsg, 'Working…');
+      try {
+        await fn();
+        await loadChans();
+        say(chMsg, okText, 'ok');
+      } catch (err) {
+        say(chMsg, (err as Error).message, 'err');
+      }
+    }
+
+    $<HTMLFormElement>('ch-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = $<HTMLInputElement>('ch-id'), note = $<HTMLInputElement>('ch-note');
+      await chanAction(() => rpc('admin_set_translate_channel', {
+        p_key: key, p_channel_id: id.value.trim(), p_language: $<HTMLSelectElement>('ch-lang').value, p_label: note.value,
+      }), 'Saved.');
+      if (chMsg.classList.contains('ok')) { id.value = ''; note.value = ''; }
+    });
+
     async function load() {
       rows = await rpc<Row[]>('admin_list_configs', { p_key: key });
+      await loadChans();
       renderStats();
       renderFiles();
       if (current && rows.some((r) => r.name === current)) open(current);
