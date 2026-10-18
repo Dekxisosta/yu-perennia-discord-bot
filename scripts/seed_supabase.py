@@ -33,6 +33,16 @@ def main() -> int:
         data = json.loads(json.dumps(yaml.safe_load(file.read_text(encoding="utf-8")), default=str))
         client.table(SUPABASE_CONFIG_TABLE).upsert({"name": name, "data": data}).execute()
         print(f"pushed {name}")
+
+    # Translate channels saved by /translate before Supabase was set up
+    from config.directories import TRANSLATE_CHANNELS_FILE
+    f = Path(TRANSLATE_CHANNELS_FILE)
+    if f.exists():
+        saved = json.loads(f.read_text(encoding="utf-8"))
+        rows = [{"channel_id": str(k), "language": v} for k, v in saved.items() if v]
+        if rows:
+            client.table("translate_channels").upsert(rows).execute()
+            print(f"pushed {len(rows)} translate channel(s) from {f.name}")
     return 0
 
 
