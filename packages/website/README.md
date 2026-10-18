@@ -18,6 +18,7 @@ Copy `.env.example` to `.env`:
 | --- | --- |
 | `PUBLIC_INVITE_URL` | Target for the "Add to Discord" buttons. Falls back to the self-host section when empty. |
 | `PUBLIC_REPO_URL` | Your repository. Used in the clone command and the footer link. |
+| `PUBLIC_SUPABASE_URL` / `PUBLIC_SUPABASE_ANON_KEY` | Supabase project for the `/admin` dashboard (see the root README). |
 
 ## Structure
 

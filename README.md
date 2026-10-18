@@ -162,6 +162,17 @@ Customize command behavior and messages through the YAML files in `config/comman
 - `utility_config.yaml` — Utility command settings.
 - `translate_config.yaml` — Translation settings and messages.
 
+### Supabase config store (optional)
+
+Config can also live in Supabase, so you can edit it from the website's `/admin` dashboard.
+
+1. Create a Supabase project and run `supabase/schema.sql` in the SQL editor.
+2. Generate an admin key (`openssl rand -hex 32`) and register its hash with the `insert into public.admin_keys ...` statement at the bottom of the schema file.
+3. Set `SUPABASE_URL` and `SUPABASE_SERVICE_KEY` in the bot's `.env`, then run `python scripts/seed_supabase.py` to upload the YAML files.
+4. Set `PUBLIC_SUPABASE_URL` and `PUBLIC_SUPABASE_ANON_KEY` in `packages/website/.env` and open `/admin`.
+
+On startup the bot loads the YAML files, then overrides them with whatever is in the `bot_config` table. If Supabase isn't configured or can't be reached, the YAML values are used. Restart the bot after saving changes in the dashboard.
+
 ---
 
 ## Project Structure
@@ -173,6 +184,10 @@ yu-perennia-bot/
 │   ├── bot_defaults.py
 │   ├── directories.py
 │   └── system_details.py
+├── scripts/
+│   └── seed_supabase.py
+├── supabase/
+│   └── schema.sql
 ├── src/
 │   ├── cogs/
 │   │   ├── commands/

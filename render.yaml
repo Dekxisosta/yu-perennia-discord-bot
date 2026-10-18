@@ -12,6 +12,10 @@ services:
         sync: false
       - key: DEEPL_API_KEY
         sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_KEY
+        sync: false
       - key: PYTHON_VERSION
         value: 3.11.0
     # Health check endpoint (optional - remove if bot doesn't have one)
