@@ -171,7 +171,9 @@ Config can also live in Supabase, so you can edit it from the website's `/admin`
 3. Set `SUPABASE_URL` and `SUPABASE_SERVICE_KEY` in the bot's `.env`, then run `python scripts/seed_supabase.py` to upload the YAML files.
 4. Set `PUBLIC_SUPABASE_URL` and `PUBLIC_SUPABASE_ANON_KEY` in `packages/website/.env` and open `/admin`.
 
-On startup the bot loads the YAML files, then overrides them with whatever is in the `bot_config` table. If Supabase isn't configured or can't be reached, the YAML values are used. Restart the bot after saving changes in the dashboard.
+On startup the bot loads the YAML files, then overrides them with whatever is in the `bot_config` table. If Supabase isn't configured or can't be reached, the YAML values are used. Restart the bot after saving command config in the dashboard.
+
+**Translation channels** are stored in the `translate_channels` table too. `/translate` writes to it, the bot re-reads it every minute, and the dashboard's *Translation channels* panel can add, change or remove channels (so changes apply without a restart). The local `data/translate_channels.json` stays as an offline cache. `seed_supabase.py` also uploads any channels already saved in that file.
 
 ---
 
