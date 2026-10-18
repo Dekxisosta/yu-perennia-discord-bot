@@ -3,6 +3,7 @@ from pathlib import Path
 from utils.console_logger import log
 from config.directories import CONFIG_YAML_FOLDER_PATH
 from config.supabase_settings import SUPABASE_URL, SUPABASE_SERVICE_KEY, SUPABASE_CONFIG_TABLE
+from utils.supabase_client import get_client
 import os, yaml
 
 file_suffix = "_config.yaml"
@@ -41,8 +42,9 @@ def _load_supabase():
         log("Supabase not configured, using local YAML only.", module_name="SUPABASE_LOADER", success=True)
         return
     try:
-        from supabase import create_client
-        client = create_client(SUPABASE_URL, SUPABASE_SERVICE_KEY)
+        client = get_client()
+        if client is None:
+            raise RuntimeError("could not create Supabase client")
         rows = client.table(SUPABASE_CONFIG_TABLE).select("name,data").execute().data or []
     except Exception as e:
         log(f"Could not reach Supabase, keeping YAML config: {e}", module_name="SUPABASE_LOADER", success=False)
