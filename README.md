@@ -166,12 +166,12 @@ Customize command behavior and messages through the YAML files in `config/comman
 
 Config can also live in Supabase, so you can edit it from the website's `/admin` dashboard.
 
-1. Create a Supabase project and run `supabase/schema.sql` in the SQL editor.
-2. Generate an admin key (`openssl rand -hex 32`) and register its hash with the `insert into public.admin_keys ...` statement at the bottom of the schema file.
+1. Create a Supabase project and run the files in `supabase/migrations/` (in order) in the SQL editor.
+2. Generate an admin key (`openssl rand -hex 32`) and register its hash with the `insert into public.admin_keys ...` statement at the bottom of the first migration.
 3. Set `SUPABASE_URL` and `SUPABASE_SERVICE_KEY` in the bot's `.env`, then run `python scripts/seed_supabase.py` to upload the YAML files.
 4. Set `PUBLIC_SUPABASE_URL` and `PUBLIC_SUPABASE_ANON_KEY` in `packages/website/.env` and open `/admin`.
 
-On startup the bot loads the YAML files, then overrides them with whatever is in the `bot_config` table. If Supabase isn't configured or can't be reached, the YAML values are used. Restart the bot after saving command config in the dashboard.
+On startup the bot loads the YAML files, then overrides them with whatever is in the `bot_config` table. If Supabase isn't configured or can't be reached, the YAML values are used. The bot re-checks config every 6 hours; the dashboard's **Refresh bot** button makes it reload config files and translation channels within about 30 seconds. Slash-command descriptions (shown in Discord's menu) are fixed at startup and still need a restart. Yu's **status** (online/idle/DND and the activity text) is also set from the dashboard and picked up within about 30 seconds, no restart needed. Until you save one, she shows the default in `src/cogs/events/cog_presence.py`.
 
 **Translation channels** are stored in the `translate_channels` table too. `/translate` writes to it, the bot re-reads it every minute, and the dashboard's *Translation channels* panel can add, change or remove channels (so changes apply without a restart). The local `data/translate_channels.json` stays as an offline cache. `seed_supabase.py` also uploads any channels already saved in that file.
 

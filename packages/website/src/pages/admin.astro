@@ -46,7 +46,11 @@ const configured = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
             </section>
 
             <section id="dash" hidden>
-              <h1 class="dash__title">Dashboard</h1>
+              <div class="dash__head">
+                <h1 class="dash__title">Dashboard</h1>
+                <button type="button" class="btn btn--ink" id="refresh">Refresh bot</button>
+              </div>
+              <p class="msg" id="rf-msg" role="status"></p>
               <div class="stats" id="stats"></div>
 
               <div class="split">
@@ -57,16 +61,59 @@ const configured = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
                     <h2 id="ed-name">Select a file</h2>
                     <span class="meta" id="ed-meta"></span>
                   </div>
+                  <div class="tabs">
+                    <button type="button" class="tab" id="tab-form" aria-pressed="true">Form</button>
+                    <button type="button" class="tab" id="tab-json" aria-pressed="false">JSON</button>
+                    <input id="filter" type="search" placeholder="Filter fields…" aria-label="Filter fields" disabled />
+                  </div>
+                  <div class="form" id="form"></div>
                   <label for="ed" class="sr">Config JSON</label>
-                  <textarea id="ed" spellcheck="false" disabled></textarea>
+                  <textarea id="ed" spellcheck="false" disabled hidden></textarea>
                   <div class="actions">
                     <button class="btn btn--tan" type="button" id="save" disabled>Save to Supabase</button>
                     <button class="btn" type="button" id="reset" disabled>Revert</button>
                     <button class="btn" type="button" id="new">New file</button>
+                    <button class="btn btn--danger" type="button" id="del" disabled>Delete file</button>
                   </div>
                   <p class="msg" id="ed-msg" role="status"></p>
-                  <p class="hint">The bot reads command config when it starts. Restart it after saving to apply changes.</p>
+                  <p class="hint">Yu re-checks config files every 6 hours. Click Refresh bot (top of the page) to apply changes within about 30 seconds. Slash-command descriptions in Discord's menu still need a bot restart.</p>
                 </div>
+              </div>
+
+              <h2 class="sec">Bot status</h2>
+              <div class="card">
+                <p class="hint">
+                  What Yu shows in Discord's member list. Changes apply within about 30 seconds, no restart needed.
+                </p>
+                <form id="st-form" class="chform" autocomplete="off">
+                  <div>
+                    <label for="st-status">Status</label>
+                    <select id="st-status">
+                      <option value="online">Online</option>
+                      <option value="idle">Idle</option>
+                      <option value="dnd">Do not disturb</option>
+                      <option value="invisible">Invisible</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label for="st-type">Activity</label>
+                    <select id="st-type">
+                      <option value="none">None</option>
+                      <option value="playing">Playing</option>
+                      <option value="listening">Listening to</option>
+                      <option value="watching">Watching</option>
+                      <option value="competing">Competing in</option>
+                      <option value="custom">Custom status</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label for="st-text">Text</label>
+                    <input id="st-text" maxlength="128" placeholder="Serving tea at Cafe Camellia" />
+                  </div>
+                  <button class="btn btn--tan" type="submit">Save status</button>
+                </form>
+                <p class="hint" id="st-preview"></p>
+                <p class="msg" id="st-msg" role="status"></p>
               </div>
 
               <h2 class="sec">Translation channels</h2>
@@ -219,8 +266,21 @@ const configured = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
     font-size: 0.95rem;
   }
 
+  .dash__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .dash__head .btn {
+    box-shadow: var(--shadow-sm);
+  }
   .dash__title {
-    margin-bottom: 1.5rem;
+    margin-bottom: 0;
+  }
+  #rf-msg {
+    margin-bottom: 1rem;
   }
   .stats {
     display: grid;
@@ -391,6 +451,70 @@ const configured = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
   }
 </style>
 
+<style is:global>
+  .admin .stat { background: var(--tan); border: var(--border); box-shadow: var(--shadow-sm); padding: 0.9rem 1.1rem; }
+  .admin .stat b { display: block; font-family: var(--font-display); font-size: 2.4rem; font-weight: 800; font-stretch: 75%; line-height: 1; }
+  .admin .stat span { font-weight: 650; }
+  .admin .files button { display: flex; justify-content: space-between; gap: 0.5rem; width: 100%; padding: 0.6rem 0.8rem; border: var(--border); background: var(--paper); color: var(--ink); box-shadow: var(--shadow-sm); font-family: var(--font-mono); font-size: 0.95rem; font-weight: 500; text-align: left; cursor: pointer; }
+  .admin .files button[aria-current='true'] { background: var(--ink); color: var(--paper); }
+  .admin .rowbtn { margin-right: 0.4rem; padding: 0.4rem 0.8rem; border: var(--border); background: var(--paper); color: var(--ink); font: inherit; font-weight: 700; cursor: pointer; }
+  .admin .rowbtn:hover { background: var(--tan); }
+  .admin .empty { padding: 1rem 0; color: var(--cocoa); }
+  .admin td select, .admin td input { width: 100%; border: var(--border); background: #fff8; color: var(--ink); font: inherit; padding: 0.6rem; border-radius: 0; }
+
+  .admin .btn--danger { background: #e9b3b3; }
+  .admin .tabs { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin-bottom: 1rem; }
+  .admin .tab { padding: 0.4rem 1rem; border: var(--border); background: var(--paper); color: var(--ink); font: inherit; font-weight: 700; cursor: pointer; }
+  .admin .tab[aria-pressed='true'] { background: var(--ink); color: var(--paper); }
+  .admin .tabs input { margin-left: auto; width: min(16rem, 100%); }
+  .admin .form { display: grid; gap: 0.6rem; max-height: 36rem; overflow: auto; padding-right: 0.25rem; }
+  .admin .form .none { color: var(--cocoa); padding: 0.5rem 0; }
+  .admin .row { display: grid; grid-template-columns: minmax(7rem, 12rem) 1fr auto; gap: 0.6rem; align-items: start; }
+  .admin .row--item { grid-template-columns: 1.8rem 1fr auto; }
+  .admin .row__key { padding-top: 0.6rem; font-family: var(--font-mono); font-weight: 500; overflow-wrap: anywhere; }
+  .admin .form input:not([type='checkbox']),
+  .admin .form textarea,
+  .admin .tabs input,
+  .admin .addrow input {
+    box-sizing: border-box;
+    width: 100%;
+    border: var(--border);
+    border-radius: 0;
+    background: #fff8;
+    color: var(--ink);
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    line-height: 1.45;
+    padding: 0.6rem 0.8rem;
+  }
+  .admin .form input:focus,
+  .admin .form textarea:focus,
+  .admin .tabs input:focus,
+  .admin .addrow input:focus { outline: 3px solid var(--tan); outline-offset: 0; }
+  .admin .row textarea { min-height: 0; resize: vertical; white-space: pre-wrap; overflow: hidden; }
+  .admin .row__key { font-size: 1rem; }
+  .admin .row input[type='checkbox'] { width: 1.3rem; height: 1.3rem; margin-top: 0.7rem; }
+  .admin .node { border: var(--border); background: #fff5; }
+  .admin .node > summary { display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.7rem; cursor: pointer; font-family: var(--font-mono); }
+  .admin .node__name { font-weight: 700; overflow-wrap: anywhere; }
+  .admin .node__count { margin-right: auto; color: var(--cocoa); font-size: 0.9rem; }
+  .admin .node__body { display: grid; gap: 0.6rem; padding: 0.7rem; border-top: var(--border); }
+  .admin .mini-group { display: flex; gap: 0.35rem; padding-top: 0.15rem; }
+  .admin .mini { font-size: 0.85rem; padding: 0.3rem 0.6rem; border: var(--border); background: var(--paper); color: var(--ink); font: inherit; font-weight: 700; line-height: 1.3; cursor: pointer; }
+  .admin .mini:hover { background: var(--tan); }
+  .admin .addrow { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; padding-top: 0.2rem; }
+  .admin .addrow input { flex: 1 1 10rem; width: auto; }
+  .admin .addrow select { border: var(--border); background: #fff8; color: var(--ink); font: inherit; padding: 0.6rem; border-radius: 0; }
+  .admin .addrow .rowbtn { margin: 0; }
+  .admin .idx { padding-top: 0.7rem; color: var(--cocoa); font-family: var(--font-mono); text-align: right; }
+  @media (max-width: 40rem) {
+    .admin .row { grid-template-columns: 1fr auto; }
+    .admin .row__key { grid-column: 1 / -1; padding-top: 0; }
+    .admin .row--item { grid-template-columns: 1fr auto; }
+    .admin .idx { display: none; }
+  }
+</style>
+
 <script>
   type Row = { name: string; data: Record<string, unknown>; updated_at: string };
 
@@ -405,6 +529,8 @@ const configured = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
     const gateMsg = $('gate-msg'), edMsg = $('ed-msg');
     const editor = $<HTMLTextAreaElement>('ed');
     const saveBtn = $<HTMLButtonElement>('save'), resetBtn = $<HTMLButtonElement>('reset'), newBtn = $('new');
+    const delBtn = $<HTMLButtonElement>('del'), formEl = $('form'), filterEl = $<HTMLInputElement>('filter');
+    const tabForm = $('tab-form'), tabJson = $('tab-json');
 
     let key = '';
     let rows: Row[] = [];
@@ -461,31 +587,253 @@ const configured = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
       }
     }
 
+    // ---------- editor state ----------
+    type Obj = Record<string, any>;
+    let model: Obj = {};
+    let view: 'form' | 'json' = 'form';
+    let dirty = false;
+    let q = '';
+    const openState = new Map<string, boolean>();
+    const isObj = (v: unknown): v is Obj => typeof v === 'object' && v !== null && !Array.isArray(v);
+    const kindOf = (v: unknown) => (Array.isArray(v) ? 'list' : v === null ? 'null' : typeof v === 'object' ? 'group' : typeof v);
+
+    function renderMeta() {
+      const r = rows.find((x) => x.name === current);
+      $('ed-meta').textContent = current ? (r ? `Updated ${fmt(r.updated_at)}` : 'Not saved yet') + (dirty ? ' · unsaved changes' : '') : '';
+    }
+    function touch() { dirty = true; renderMeta(); }
+    function setEnabled(on: boolean) {
+      editor.disabled = saveBtn.disabled = resetBtn.disabled = delBtn.disabled = filterEl.disabled = !on;
+    }
+    function clearEditor() {
+      current = null; model = {}; dirty = false;
+      editor.value = ''; formEl.innerHTML = '';
+      $('ed-name').textContent = 'Select a file';
+      renderMeta(); setEnabled(false); renderFiles();
+    }
+
     function renderFiles() {
       const nav = $('files');
       nav.innerHTML = '';
-      for (const r of rows) {
+      const add = (name: string, note: string) => {
         const b = document.createElement('button');
         b.type = 'button';
-        b.setAttribute('aria-current', String(r.name === current));
-        const n = document.createElement('span'); n.textContent = r.name;
-        const c = document.createElement('span'); c.textContent = `${countCommands(r.data)} cmd`;
+        b.setAttribute('aria-current', String(name === current));
+        const n = document.createElement('span'); n.textContent = name;
+        const c = document.createElement('span'); c.textContent = note;
         b.append(n, c);
-        b.addEventListener('click', () => open(r.name));
+        b.addEventListener('click', () => guardedOpen(name));
         nav.append(b);
-      }
+      };
+      for (const r of rows) add(r.name, `${countCommands(r.data)} cmd`);
+      if (current && !rows.some((r) => r.name === current)) add(current, 'new');
+    }
+
+    function guardedOpen(name: string) {
+      if (name === current) return;
+      if (dirty && !confirm('Discard your unsaved changes?')) return;
+      open(name);
     }
 
     function open(name: string, text?: string) {
       current = name;
       const r = rows.find((x) => x.name === name);
-      editor.value = text ?? JSON.stringify(r?.data ?? {}, null, 2);
-      editor.disabled = saveBtn.disabled = resetBtn.disabled = false;
+      model = structuredClone(text !== undefined ? JSON.parse(text) : r?.data ?? {});
+      openState.clear();
+      q = ''; filterEl.value = '';
+      dirty = text !== undefined;
+      editor.value = JSON.stringify(model, null, 2);
       $('ed-name').textContent = name;
-      $('ed-meta').textContent = r ? `Updated ${fmt(r.updated_at)}` : 'Not saved yet';
+      setEnabled(true);
       say(edMsg, '');
-      renderFiles();
+      renderMeta(); renderForm(); renderFiles(); applyView();
     }
+
+    // ---------- form editor ----------
+    function h(tag: string, cls = '', text = ''): any {
+      const e: any = document.createElement(tag);
+      if (cls) e.className = cls;
+      if (text) e.textContent = text;
+      return e;
+    }
+    function mini(label: string, title: string, fn: () => void) {
+      const b = h('button', 'mini', label);
+      b.type = 'button'; b.title = title; b.setAttribute('aria-label', title);
+      b.addEventListener('click', (ev: Event) => { ev.preventDefault(); ev.stopPropagation(); fn(); });
+      return b;
+    }
+    const matches = (key: string | number, v: unknown) =>
+      !q || String(key).toLowerCase().includes(q) || JSON.stringify(v).toLowerCase().includes(q);
+
+    function renameKey(obj: Obj, from: string, to: string) {
+      const entries = Object.entries(obj).map(([k, v]) => [k === from ? to : k, v] as [string, unknown]);
+      for (const k of Object.keys(obj)) delete obj[k];
+      for (const [k, v] of entries) obj[k] = v;
+    }
+    function removeAt(parent: any, key: string | number) {
+      const v = parent[key];
+      const big = typeof v === 'object' && v !== null && Object.keys(v).length > 0;
+      if (big && !confirm(`Delete "${key}" and everything inside it?`)) return;
+      if (Array.isArray(parent)) parent.splice(key as number, 1); else delete parent[key];
+      touch(); renderForm();
+    }
+    function moveAt(arr: any[], i: number, dir: number) {
+      const j = i + dir;
+      if (j < 0 || j >= arr.length) return;
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+      touch(); renderForm();
+    }
+    function actions(parent: any, key: string | number): HTMLElement {
+      const g = h('div', 'mini-group');
+      if (Array.isArray(parent)) {
+        const i = key as number;
+        g.append(mini('↑', 'Move up', () => moveAt(parent, i, -1)), mini('↓', 'Move down', () => moveAt(parent, i, 1)));
+      } else {
+        g.append(mini('Rename', 'Rename field', () => {
+          const to = (prompt('New name', String(key)) || '').trim();
+          if (!to || to === key) return;
+          if (to === '__proto__' || to in parent) return say(edMsg, `"${to}" is not available.`, 'err');
+          renameKey(parent, String(key), to); touch(); renderForm();
+        }));
+      }
+      g.append(mini('✕', 'Delete', () => removeAt(parent, key)));
+      return g;
+    }
+
+    function leaf(parent: any, key: string | number): HTMLElement {
+      const v = parent[key];
+      const label = `Value of ${key}`;
+      if (typeof v === 'boolean') {
+        const c = h('input'); c.type = 'checkbox'; c.checked = v; c.setAttribute('aria-label', label);
+        c.addEventListener('change', () => { parent[key] = c.checked; touch(); });
+        return c;
+      }
+      if (typeof v === 'number') {
+        const i = h('input'); i.type = 'number'; i.step = 'any'; i.value = String(v); i.setAttribute('aria-label', label);
+        i.addEventListener('input', () => { if (i.value !== '' && !isNaN(Number(i.value))) { parent[key] = Number(i.value); touch(); } });
+        return i;
+      }
+      const s = v === null ? '' : String(v);
+      const multi = s.length > 80 || s.includes('\n');
+      const f = h(multi ? 'textarea' : 'input');
+      f.value = s; f.setAttribute('aria-label', label);
+      if (multi) f.rows = Math.min(10, Math.max(2, Math.ceil(s.length / 70) + s.split('\n').length - 1));
+      if (multi) {
+        const fit = () => { if (f.scrollHeight > 0) { f.style.height = 'auto'; f.style.height = f.scrollHeight + 2 + 'px'; } };
+        f.addEventListener('input', fit);
+        f.addEventListener('fit', fit);
+        requestAnimationFrame(fit);
+      }
+      f.addEventListener('input', () => { parent[key] = f.value; touch(); });
+      return f;
+    }
+
+    function fieldRow(parent: any, key: string | number, path: string, depth: number): HTMLElement | null {
+      const v = parent[key];
+      if (!matches(key, v)) return null;
+      const isArr = Array.isArray(parent);
+      const k = kindOf(v);
+      if (k === 'group' || k === 'list') {
+        const d = h('details', 'node');
+        d.open = q ? true : openState.get(path) ?? depth === 0;
+        d.addEventListener('toggle', () => { if (!q) openState.set(path, d.open); if (d.open) d.querySelectorAll('textarea').forEach((t: Element) => t.dispatchEvent(new Event('fit'))); });
+        const n = k === 'list' ? v.length : Object.keys(v).length;
+        const sum = h('summary');
+        sum.append(
+          h('span', 'node__name', isArr ? `#${(key as number) + 1}` : String(key)),
+          h('span', 'node__count', `${n} ${k === 'list' ? 'item' : 'field'}${n === 1 ? '' : 's'}`),
+          actions(parent, key),
+        );
+        const body = h('div', 'node__body');
+        body.append(...children(v, path, depth + 1));
+        d.append(sum, body);
+        return d;
+      }
+      const row = h('div', isArr ? 'row row--item' : 'row');
+      row.append(isArr ? h('span', 'idx', String((key as number) + 1)) : h('label', 'row__key', String(key)), leaf(parent, key), actions(parent, key));
+      return row;
+    }
+
+    function children(node: any, path: string, depth: number): HTMLElement[] {
+      const out: HTMLElement[] = [];
+      for (const key of Array.isArray(node) ? node.map((_: unknown, i: number) => i) : Object.keys(node)) {
+        const el = fieldRow(node, key, path + '\u0001' + key, depth);
+        if (el) out.push(el);
+      }
+      if (!out.length && q) out.push(h('p', 'none', 'No matching fields.'));
+      out.push(Array.isArray(node) ? addItem(node) : addField(node));
+      return out;
+    }
+
+    function addItem(arr: any[]): HTMLElement {
+      const first = arr[0];
+      const label = isObj(first) ? '+ Add group' : typeof first === 'number' ? '+ Add number' : '+ Add line';
+      const b = h('button', 'rowbtn', label);
+      b.type = 'button';
+      b.addEventListener('click', () => {
+        arr.push(isObj(first) ? {} : typeof first === 'number' ? 0 : '');
+        touch(); renderForm();
+      });
+      const w = h('div', 'addrow'); w.append(b);
+      return w;
+    }
+
+    function addField(obj: Obj): HTMLElement {
+      const w = h('div', 'addrow');
+      const name = h('input'); name.placeholder = 'new field name'; name.setAttribute('aria-label', 'New field name'); name.maxLength = 60;
+      const type = h('select'); type.setAttribute('aria-label', 'Field type');
+      for (const [v, l] of [['text', 'Text'], ['list', 'List'], ['group', 'Group'], ['number', 'Number'], ['bool', 'Yes / No']]) {
+        const o = h('option', '', l); o.value = v; type.append(o);
+      }
+      const go = h('button', 'rowbtn', 'Add field'); go.type = 'button';
+      const run = () => {
+        const n = name.value.trim();
+        if (!n) return name.focus();
+        if (n === '__proto__' || n in obj) return say(edMsg, `"${n}" already exists.`, 'err');
+        obj[n] = { text: '', list: [], group: {}, number: 0, bool: false }[type.value as string];
+        touch(); renderForm();
+      };
+      go.addEventListener('click', run);
+      name.addEventListener('keydown', (e: KeyboardEvent) => { if (e.key === 'Enter') { e.preventDefault(); run(); } });
+      w.append(name, type, go);
+      return w;
+    }
+
+    function renderForm() {
+      formEl.innerHTML = '';
+      formEl.append(...children(model, '', 0));
+    }
+
+    // ---------- Form / JSON tabs ----------
+    function applyView() {
+      formEl.hidden = filterEl.hidden = view === 'json';
+      editor.hidden = view === 'form';
+      tabForm.setAttribute('aria-pressed', String(view === 'form'));
+      tabJson.setAttribute('aria-pressed', String(view === 'json'));
+    }
+    function setView(next: 'form' | 'json') {
+      if (next === view) return;
+      if (next === 'json') {
+        editor.value = JSON.stringify(model, null, 2);
+      } else {
+        try {
+          const d = JSON.parse(editor.value);
+          if (!isObj(d)) throw new Error('The top level must be a JSON object.');
+          model = d;
+        } catch (err) {
+          return say(edMsg, 'Fix the JSON first: ' + (err as Error).message, 'err');
+        }
+        renderForm();
+      }
+      say(edMsg, '');
+      view = next;
+      applyView();
+    }
+    tabForm.addEventListener('click', () => setView('form'));
+    tabJson.addEventListener('click', () => setView('json'));
+    editor.addEventListener('input', touch);
+    filterEl.addEventListener('input', () => { q = filterEl.value.trim().toLowerCase(); renderForm(); });
+    window.addEventListener('beforeunload', (e) => { if (dirty) e.preventDefault(); });
 
     function renderChans() {
       chBody.innerHTML = '';
@@ -544,7 +892,7 @@ const configured = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
         chans = await rpc<Chan[]>('admin_list_translate_channels', { p_key: key });
         renderChans();
       } catch (err) {
-        say(chMsg, (err as Error).message + ' (Did you re-run supabase/schema.sql?)', 'err');
+        say(chMsg, (err as Error).message + ' (Did you run the supabase migrations?)', 'err');
       }
     }
 
@@ -568,14 +916,71 @@ const configured = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
       if (chMsg.classList.contains('ok')) { id.value = ''; note.value = ''; }
     });
 
+    // ---------- bot status ----------
+    const stStatus = $<HTMLSelectElement>('st-status'), stType = $<HTMLSelectElement>('st-type');
+    const stText = $<HTMLInputElement>('st-text'), stMsg = $('st-msg'), stPreview = $('st-preview');
+    const STATUS_DEFAULT = { status: 'dnd', activity_type: 'playing', message: 'Apologies, Masters... Under Maintenance' };
+    const optLabel = (sel: HTMLSelectElement) => sel.selectedOptions[0]?.textContent || '';
+
+    function renderStatusPreview() {
+      stText.disabled = stType.value === 'none';
+      const act = stType.value === 'none' || !stText.value.trim()
+        ? 'no activity'
+        : stType.value === 'custom' ? stText.value.trim() : `${optLabel(stType)} ${stText.value.trim()}`;
+      stPreview.textContent = `Preview: ${optLabel(stStatus)} · ${act}`;
+    }
+    for (const el of [stStatus, stType, stText]) el.addEventListener('input', renderStatusPreview);
+
+    async function loadStatus() {
+      try {
+        const r = await rpc<{ status: string; activity_type: string; message: string | null }[]>('admin_get_status', { p_key: key });
+        const s = r[0] ?? STATUS_DEFAULT;
+        stStatus.value = s.status; stType.value = s.activity_type; stText.value = s.message || '';
+        renderStatusPreview();
+      } catch (err) {
+        say(stMsg, (err as Error).message + ' (Did you run the supabase migrations?)', 'err');
+      }
+    }
+
+    $<HTMLFormElement>('st-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      say(stMsg, 'Saving…');
+      try {
+        await rpc('admin_set_status', {
+          p_key: key, p_status: stStatus.value, p_activity_type: stType.value, p_message: stText.value,
+        });
+        say(stMsg, 'Saved. Yu updates within about 30 seconds.', 'ok');
+      } catch (err) {
+        say(stMsg, (err as Error).message, 'err');
+      }
+    });
+
+    // ---------- force refresh ----------
+    const refreshBtn = $<HTMLButtonElement>('refresh'), rfMsg = $('rf-msg');
+    refreshBtn.addEventListener('click', async () => {
+      refreshBtn.disabled = true;
+      say(rfMsg, 'Requesting…');
+      try {
+        await rpc('admin_request_refresh', { p_key: key });
+        say(rfMsg, 'Requested. Yu reloads config files and translation channels within about 30 seconds.', 'ok');
+      } catch (err) {
+        say(rfMsg, (err as Error).message + ' (Did you run the supabase migrations?)', 'err');
+      }
+      setTimeout(() => { refreshBtn.disabled = false; }, 10000);
+    });
+
     async function load() {
       rows = await rpc<Row[]>('admin_list_configs', { p_key: key });
       await loadChans();
+      await loadStatus();
       renderStats();
       renderFiles();
       if (current && rows.some((r) => r.name === current)) open(current);
       else if (rows[0]) open(rows[0].name);
-      else say(edMsg, 'No config files yet. Create one, or run scripts/seed_supabase.py in the bot repo.');
+      else {
+        clearEditor();
+        say(edMsg, 'No config files yet. Create one, or run scripts/seed_supabase.py in the bot repo.');
+      }
     }
 
     async function unlock(k: string, remember = true) {
@@ -591,7 +996,7 @@ const configured = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
       key = '';
       store.clear();
       rows = [];
-      current = null;
+      clearEditor();
       keyInput.value = '';
       dash.hidden = true;
       gate.hidden = false;
@@ -612,36 +1017,63 @@ const configured = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
     });
 
     lockBtn.addEventListener('click', lock);
-    resetBtn.addEventListener('click', () => current && open(current));
+    resetBtn.addEventListener('click', () => {
+      if (!current) return;
+      if (dirty && !confirm('Discard your unsaved changes?')) return;
+      open(current, rows.some((r) => r.name === current) ? undefined : '{}');
+    });
 
     newBtn.addEventListener('click', () => {
+      if (dirty && !confirm('Discard your unsaved changes?')) return;
       const name = (prompt('File name (lowercase letters, digits, underscores). Example: general') || '').trim();
       if (!name) return;
       if (!/^[a-z0-9_]{1,40}$/.test(name)) return say(edMsg, 'Use lowercase letters, digits and underscores only.', 'err');
-      open(name, '{\n  \n}');
+      if (rows.some((r) => r.name === name)) return open(name);
+      open(name, '{}');
     });
 
     saveBtn.addEventListener('click', async () => {
       if (!current) return;
-      let data: unknown;
+      let data: Obj;
       try {
-        data = JSON.parse(editor.value);
+        data = view === 'json' ? JSON.parse(editor.value) : model;
       } catch (err) {
         return say(edMsg, 'Invalid JSON: ' + (err as Error).message, 'err');
       }
-      if (typeof data !== 'object' || data === null || Array.isArray(data)) {
-        return say(edMsg, 'The top level must be a JSON object.', 'err');
-      }
+      if (!isObj(data)) return say(edMsg, 'The top level must be a JSON object.', 'err');
       saveBtn.disabled = true;
       say(edMsg, 'Saving…');
       try {
         await rpc('admin_save_config', { p_key: key, p_name: current, p_data: data });
         await load();
-        say(edMsg, 'Saved.', 'ok');
+        say(edMsg, 'Saved. Click Refresh bot to apply it now.', 'ok');
       } catch (err) {
         say(edMsg, (err as Error).message, 'err');
       } finally {
-        saveBtn.disabled = false;
+        saveBtn.disabled = !current;
+      }
+    });
+
+    delBtn.addEventListener('click', async () => {
+      if (!current) return;
+      const name = current;
+      if (!rows.some((r) => r.name === name)) {
+        // never saved: just discard it
+        dirty = false; clearEditor();
+        if (rows[0]) open(rows[0].name);
+        return;
+      }
+      if (!confirm(`Delete "${name}" from Supabase? After a restart the bot uses its bundled YAML for this file.`)) return;
+      delBtn.disabled = true;
+      say(edMsg, 'Deleting…');
+      try {
+        await rpc('admin_delete_config', { p_key: key, p_name: name });
+        dirty = false; current = null;
+        await load();
+        say(edMsg, `Deleted "${name}".`, 'ok');
+      } catch (err) {
+        say(edMsg, (err as Error).message + ' (Did you run the latest supabase migration?)', 'err');
+        delBtn.disabled = false;
       }
     });
 

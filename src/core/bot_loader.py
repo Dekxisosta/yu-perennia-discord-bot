@@ -1,6 +1,5 @@
 import os
 import logging
-import discord
 
 from discord.ext import commands
 
@@ -82,13 +81,7 @@ async def setup_hook() -> None:
 
 @bot.event
 async def on_ready() -> None:
-    await bot.change_presence(
-        activity=discord.Game(
-            name="Apologies, Masters... Under Maintenance"
-        ),
-        status=discord.Status.dnd,
-    )
-
+    # Presence is managed by cogs/events/cog_presence.py (Supabase-backed).
     log(
         f"Logged in as {bot.user}",
         module_name="BOT",
