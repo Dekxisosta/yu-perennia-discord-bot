@@ -1,0 +1,651 @@
+---
+import Base from '../layouts/Base.astro';
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from '../site';
+
+const configured = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
+---
+
+<Base title="Admin · Yu Perennia" description="Yu Perennia admin dashboard." noindex>
+  <header class="bar">
+    <div class="wrap bar__inner">
+      <a class="brand" href="/">
+        <img src="/yu.png" width="44" height="44" alt="" />
+        <span>Yu Perennia</span>
+      </a>
+      <span class="tag">Admin</span>
+      <button type="button" class="btn btn--ink lock" id="lock" hidden>Lock</button>
+    </div>
+  </header>
+
+  <main class="admin" data-url={SUPABASE_URL} data-anon={SUPABASE_ANON_KEY}>
+    <div class="wrap">
+      {
+        !configured && (
+          <section class="card">
+            <h1>Not connected</h1>
+            <p class="lede">
+              Set <code>PUBLIC_SUPABASE_URL</code> and <code>PUBLIC_SUPABASE_ANON_KEY</code> in the website's
+              <code>.env</code>, then rebuild.
+            </p>
+          </section>
+        )
+      }
+
+      {
+        configured && (
+          <>
+            <section class="card gate" id="gate">
+              <h1>Admin key</h1>
+              <p class="lede">Enter your admin key to open the dashboard.</p>
+              <form id="gate-form" autocomplete="off">
+                <label for="key">Key</label>
+                <input id="key" type="password" spellcheck="false" autocomplete="off" required />
+                <button class="btn btn--tan" type="submit">Unlock</button>
+              </form>
+              <p class="msg" id="gate-msg" role="alert"></p>
+            </section>
+
+            <section id="dash" hidden>
+              <h1 class="dash__title">Dashboard</h1>
+              <div class="stats" id="stats"></div>
+
+              <div class="split">
+                <nav class="files" aria-label="Config files" id="files"></nav>
+
+                <div class="card editor">
+                  <div class="editor__head">
+                    <h2 id="ed-name">Select a file</h2>
+                    <span class="meta" id="ed-meta"></span>
+                  </div>
+                  <label for="ed" class="sr">Config JSON</label>
+                  <textarea id="ed" spellcheck="false" disabled></textarea>
+                  <div class="actions">
+                    <button class="btn btn--tan" type="button" id="save" disabled>Save to Supabase</button>
+                    <button class="btn" type="button" id="reset" disabled>Revert</button>
+                    <button class="btn" type="button" id="new">New file</button>
+                  </div>
+                  <p class="msg" id="ed-msg" role="status"></p>
+                  <p class="hint">The bot reads command config when it starts. Restart it after saving to apply changes.</p>
+                </div>
+              </div>
+
+              <h2 class="sec">Translation channels</h2>
+              <div class="card chans">
+                <p class="hint">
+                  Channels where Yu auto-translates. Changes reach the bot within about a minute. Use the note to
+                  remember which channel an ID is. Discord channel IDs come from Developer Mode, then right-click a channel, then Copy Channel ID.
+                </p>
+                <div class="tablewrap">
+                  <table>
+                    <thead>
+                      <tr><th>Channel ID</th><th>Language</th><th>Note</th><th></th></tr>
+                    </thead>
+                    <tbody id="ch-body"></tbody>
+                  </table>
+                </div>
+                <form id="ch-form" class="chform" autocomplete="off">
+                  <div>
+                    <label for="ch-id">Channel ID</label>
+                    <input id="ch-id" inputmode="numeric" pattern="[0-9]{5,25}" placeholder="123456789012345678" required />
+                  </div>
+                  <div>
+                    <label for="ch-lang">Language</label>
+                    <select id="ch-lang">
+                      <option value="zh">Chinese</option>
+                      <option value="ja">Japanese</option>
+                      <option value="off">Off</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label for="ch-note">Note (optional)</label>
+                    <input id="ch-note" maxlength="60" placeholder="#general" />
+                  </div>
+                  <button class="btn btn--tan" type="submit">Add channel</button>
+                </form>
+                <p class="msg" id="ch-msg" role="status"></p>
+              </div>
+            </section>
+          </>
+        )
+      }
+    </div>
+  </main>
+</Base>
+
+<style>
+  .bar {
+    background: var(--paper);
+    border-bottom: var(--border);
+  }
+  .bar__inner {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding-block: 0.65rem;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    font-weight: 800;
+    font-stretch: 75%;
+    text-decoration: none;
+  }
+  .brand img {
+    border: var(--border);
+    background: var(--mist);
+  }
+  .tag {
+    margin-right: auto;
+    padding: 0.1rem 0.6rem;
+    border: var(--border);
+    background: var(--tan);
+    font-family: var(--font-mono);
+    font-weight: 500;
+  }
+  .lock {
+    min-height: 2.6rem;
+    font-size: 1.05rem;
+    box-shadow: var(--shadow-sm);
+  }
+  .lock[hidden],
+  [hidden] {
+    display: none !important;
+  }
+
+  .admin {
+    min-height: 70vh;
+    padding-block: clamp(2rem, 6vw, 4rem);
+    background: var(--mist);
+  }
+  h1 {
+    font-size: clamp(2.5rem, 6vw, 4rem);
+  }
+  .card {
+    background: var(--paper);
+    border: var(--border);
+    box-shadow: var(--shadow);
+    padding: clamp(1.25rem, 3vw, 2rem);
+  }
+  .gate {
+    max-width: 30rem;
+  }
+  form {
+    display: grid;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+  }
+  label {
+    font-weight: 700;
+  }
+  .sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+  input,
+  textarea {
+    width: 100%;
+    border: var(--border);
+    background: #fff8;
+    color: var(--ink);
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    padding: 0.7rem 0.8rem;
+    border-radius: 0;
+  }
+  form .btn {
+    margin-top: 0.75rem;
+    justify-self: start;
+  }
+  .msg {
+    margin-top: 1rem;
+    min-height: 1.5em;
+    font-weight: 650;
+  }
+  .msg.err {
+    color: #7a1f1f;
+  }
+  .msg.ok {
+    color: #1f5a2e;
+  }
+  .hint {
+    margin-top: 0.5rem;
+    color: var(--cocoa);
+    font-size: 0.95rem;
+  }
+
+  .dash__title {
+    margin-bottom: 1.5rem;
+  }
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .stat {
+    background: var(--tan);
+    border: var(--border);
+    box-shadow: var(--shadow-sm);
+    padding: 0.9rem 1.1rem;
+  }
+  .stat b {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 2.4rem;
+    font-weight: 800;
+    font-stretch: 75%;
+    line-height: 1;
+  }
+  .stat span {
+    font-weight: 650;
+  }
+
+  .split {
+    display: grid;
+    grid-template-columns: 15rem 1fr;
+    gap: 1.5rem;
+    align-items: start;
+  }
+  .files {
+    display: grid;
+    gap: 0.6rem;
+  }
+  .files button {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.6rem 0.8rem;
+    border: var(--border);
+    background: var(--paper);
+    color: var(--ink);
+    box-shadow: var(--shadow-sm);
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+  }
+  .files button[aria-current='true'] {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .editor__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
+    margin-bottom: 1rem;
+  }
+  .editor h2 {
+    font-size: 2rem;
+  }
+  .meta {
+    color: var(--cocoa);
+    font-size: 0.95rem;
+  }
+  textarea {
+    min-height: 26rem;
+    resize: vertical;
+    line-height: 1.5;
+    tab-size: 2;
+    white-space: pre;
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+    margin-top: 1.25rem;
+  }
+  .actions .btn {
+    min-height: 2.6rem;
+    font-size: 1.05rem;
+    box-shadow: var(--shadow-sm);
+  }
+  .actions .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+  .sec {
+    margin: 2.5rem 0 1rem;
+    font-size: clamp(2rem, 4vw, 2.75rem);
+  }
+  .tablewrap {
+    overflow-x: auto;
+    margin-top: 1rem;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 36rem;
+  }
+  th,
+  td {
+    padding: 0.5rem 0.5rem 0.5rem 0;
+    text-align: left;
+    vertical-align: middle;
+  }
+  th {
+    font-weight: 700;
+    border-bottom: var(--border);
+  }
+  td code {
+    font-size: 0.95rem;
+  }
+  select {
+    border: var(--border);
+    background: #fff8;
+    color: var(--ink);
+    font: inherit;
+    padding: 0.6rem 0.6rem;
+    border-radius: 0;
+  }
+  .rowbtn {
+    margin-right: 0.4rem;
+    padding: 0.4rem 0.8rem;
+    border: var(--border);
+    background: var(--paper);
+    color: var(--ink);
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .rowbtn:hover {
+    background: var(--tan);
+  }
+  .empty {
+    padding: 1rem 0;
+    color: var(--cocoa);
+  }
+  .chform {
+    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+    align-items: end;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: var(--border);
+  }
+  .chform > div {
+    display: grid;
+    gap: 0.4rem;
+  }
+  .chform .btn {
+    margin-top: 0;
+    min-height: 2.9rem;
+  }
+  @media (max-width: 52rem) {
+    .split {
+      grid-template-columns: 1fr;
+    }
+    .files {
+      grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+    }
+  }
+</style>
+
+<script>
+  type Row = { name: string; data: Record<string, unknown>; updated_at: string };
+
+  const root = document.querySelector<HTMLElement>('.admin');
+  if (root && root.dataset.url) {
+    const base = root.dataset.url.replace(/\/$/, '');
+    const anon = root.dataset.anon || '';
+    const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
+
+    const gate = $('gate'), dash = $('dash'), lockBtn = $('lock');
+    const gateForm = $<HTMLFormElement>('gate-form'), keyInput = $<HTMLInputElement>('key');
+    const gateMsg = $('gate-msg'), edMsg = $('ed-msg');
+    const editor = $<HTMLTextAreaElement>('ed');
+    const saveBtn = $<HTMLButtonElement>('save'), resetBtn = $<HTMLButtonElement>('reset'), newBtn = $('new');
+
+    let key = '';
+    let rows: Row[] = [];
+    let current: string | null = null;
+    type Chan = { channel_id: string; language: string; label: string | null; updated_at: string };
+    let chans: Chan[] = [];
+    const chBody = $('ch-body'), chMsg = $('ch-msg');
+    const LANG_NAMES: Record<string, string> = { zh: 'Chinese', ja: 'Japanese', off: 'Off' };
+
+    const store = {
+      get: () => { try { return sessionStorage.getItem('yu-admin-key') || ''; } catch { return ''; } },
+      set: (v: string) => { try { sessionStorage.setItem('yu-admin-key', v); } catch { /* ignore */ } },
+      clear: () => { try { sessionStorage.removeItem('yu-admin-key'); } catch { /* ignore */ } },
+    };
+
+    async function rpc<T>(fn: string, args: Record<string, unknown>): Promise<T> {
+      const res = await fetch(`${base}/rest/v1/rpc/${fn}`, {
+        method: 'POST',
+        headers: { apikey: anon, Authorization: `Bearer ${anon}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(args),
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        const msg = String(body.message || '');
+        if (/invalid admin key/i.test(msg)) throw new Error('That key is not valid.');
+        throw new Error(msg || `Request failed (${res.status})`);
+      }
+      return res.json();
+    }
+
+    const say = (el: HTMLElement, text: string, kind: 'ok' | 'err' | '' = '') => {
+      el.textContent = text;
+      el.className = 'msg' + (kind ? ' ' + kind : '');
+    };
+    const fmt = (iso: string) => new Date(iso).toLocaleString();
+    const countCommands = (d: Record<string, unknown>) =>
+      d && typeof d.commands === 'object' && d.commands ? Object.keys(d.commands).length : 0;
+
+    function renderStats() {
+      const latest = rows.reduce((a, r) => (r.updated_at > a ? r.updated_at : a), '');
+      const cells: [string, string][] = [
+        [String(rows.length), 'Config files'],
+        [String(rows.reduce((n, r) => n + countCommands(r.data), 0)), 'Commands defined'],
+        [latest ? fmt(latest) : 'never', 'Last change'],
+      ];
+      $('stats').innerHTML = '';
+      for (const [v, l] of cells) {
+        const d = document.createElement('div');
+        d.className = 'stat';
+        const b = document.createElement('b'); b.textContent = v;
+        const s = document.createElement('span'); s.textContent = l;
+        d.append(b, s);
+        $('stats').append(d);
+      }
+    }
+
+    function renderFiles() {
+      const nav = $('files');
+      nav.innerHTML = '';
+      for (const r of rows) {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.setAttribute('aria-current', String(r.name === current));
+        const n = document.createElement('span'); n.textContent = r.name;
+        const c = document.createElement('span'); c.textContent = `${countCommands(r.data)} cmd`;
+        b.append(n, c);
+        b.addEventListener('click', () => open(r.name));
+        nav.append(b);
+      }
+    }
+
+    function open(name: string, text?: string) {
+      current = name;
+      const r = rows.find((x) => x.name === name);
+      editor.value = text ?? JSON.stringify(r?.data ?? {}, null, 2);
+      editor.disabled = saveBtn.disabled = resetBtn.disabled = false;
+      $('ed-name').textContent = name;
+      $('ed-meta').textContent = r ? `Updated ${fmt(r.updated_at)}` : 'Not saved yet';
+      say(edMsg, '');
+      renderFiles();
+    }
+
+    function renderChans() {
+      chBody.innerHTML = '';
+      if (!chans.length) {
+        const tr = chBody.appendChild(document.createElement('tr'));
+        const td = tr.appendChild(document.createElement('td'));
+        td.colSpan = 4;
+        td.className = 'empty';
+        td.textContent = 'No channels saved yet.';
+        return;
+      }
+      for (const c of chans) {
+        const tr = document.createElement('tr');
+        const idTd = document.createElement('td');
+        const code = document.createElement('code'); code.textContent = c.channel_id;
+        idTd.append(code);
+
+        const langTd = document.createElement('td');
+        const sel = document.createElement('select');
+        sel.setAttribute('aria-label', 'Language for ' + c.channel_id);
+        for (const [v, n] of Object.entries(LANG_NAMES)) {
+          const o = document.createElement('option'); o.value = v; o.textContent = n;
+          if (v === c.language) o.selected = true;
+          sel.append(o);
+        }
+        if (!(c.language in LANG_NAMES)) {
+          const o = document.createElement('option'); o.value = c.language; o.textContent = c.language; o.selected = true;
+          sel.prepend(o);
+        }
+        langTd.append(sel);
+
+        const noteTd = document.createElement('td');
+        const note = document.createElement('input');
+        note.value = c.label || ''; note.maxLength = 60;
+        note.setAttribute('aria-label', 'Note for ' + c.channel_id);
+        noteTd.append(note);
+
+        const actTd = document.createElement('td');
+        const save = document.createElement('button'); save.type = 'button'; save.className = 'rowbtn'; save.textContent = 'Save';
+        const del = document.createElement('button'); del.type = 'button'; del.className = 'rowbtn'; del.textContent = 'Remove';
+        save.addEventListener('click', () => chanAction(() => rpc('admin_set_translate_channel',
+          { p_key: key, p_channel_id: c.channel_id, p_language: sel.value, p_label: note.value }), 'Saved.'));
+        del.addEventListener('click', () => {
+          if (confirm('Remove ' + c.channel_id + '? It falls back to TRANSLATE_CHANNEL_IDS or no translation.')) {
+            chanAction(() => rpc('admin_delete_translate_channel', { p_key: key, p_channel_id: c.channel_id }), 'Removed.');
+          }
+        });
+        actTd.append(save, del);
+        tr.append(idTd, langTd, noteTd, actTd);
+        chBody.append(tr);
+      }
+    }
+
+    async function loadChans() {
+      try {
+        chans = await rpc<Chan[]>('admin_list_translate_channels', { p_key: key });
+        renderChans();
+      } catch (err) {
+        say(chMsg, (err as Error).message + ' (Did you re-run supabase/schema.sql?)', 'err');
+      }
+    }
+
+    async function chanAction(fn: () => Promise<unknown>, okText: string) {
+      say(chMsg, 'Working…');
+      try {
+        await fn();
+        await loadChans();
+        say(chMsg, okText, 'ok');
+      } catch (err) {
+        say(chMsg, (err as Error).message, 'err');
+      }
+    }
+
+    $<HTMLFormElement>('ch-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = $<HTMLInputElement>('ch-id'), note = $<HTMLInputElement>('ch-note');
+      await chanAction(() => rpc('admin_set_translate_channel', {
+        p_key: key, p_channel_id: id.value.trim(), p_language: $<HTMLSelectElement>('ch-lang').value, p_label: note.value,
+      }), 'Saved.');
+      if (chMsg.classList.contains('ok')) { id.value = ''; note.value = ''; }
+    });
+
+    async function load() {
+      rows = await rpc<Row[]>('admin_list_configs', { p_key: key });
+      await loadChans();
+      renderStats();
+      renderFiles();
+      if (current && rows.some((r) => r.name === current)) open(current);
+      else if (rows[0]) open(rows[0].name);
+      else say(edMsg, 'No config files yet. Create one, or run scripts/seed_supabase.py in the bot repo.');
+    }
+
+    async function unlock(k: string, remember = true) {
+      key = k;
+      await load();
+      if (remember) store.set(k);
+      gate.hidden = true;
+      dash.hidden = false;
+      lockBtn.hidden = false;
+    }
+
+    function lock() {
+      key = '';
+      store.clear();
+      rows = [];
+      current = null;
+      keyInput.value = '';
+      dash.hidden = true;
+      gate.hidden = false;
+      lockBtn.hidden = true;
+      say(gateMsg, '');
+    }
+
+    gateForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      say(gateMsg, 'Checking…');
+      try {
+        await unlock(keyInput.value.trim());
+        keyInput.value = '';
+        say(gateMsg, '');
+      } catch (err) {
+        say(gateMsg, (err as Error).message, 'err');
+      }
+    });
+
+    lockBtn.addEventListener('click', lock);
+    resetBtn.addEventListener('click', () => current && open(current));
+
+    newBtn.addEventListener('click', () => {
+      const name = (prompt('File name (lowercase letters, digits, underscores). Example: general') || '').trim();
+      if (!name) return;
+      if (!/^[a-z0-9_]{1,40}$/.test(name)) return say(edMsg, 'Use lowercase letters, digits and underscores only.', 'err');
+      open(name, '{\n  \n}');
+    });
+
+    saveBtn.addEventListener('click', async () => {
+      if (!current) return;
+      let data: unknown;
+      try {
+        data = JSON.parse(editor.value);
+      } catch (err) {
+        return say(edMsg, 'Invalid JSON: ' + (err as Error).message, 'err');
+      }
+      if (typeof data !== 'object' || data === null || Array.isArray(data)) {
+        return say(edMsg, 'The top level must be a JSON object.', 'err');
+      }
+      saveBtn.disabled = true;
+      say(edMsg, 'Saving…');
+      try {
+        await rpc('admin_save_config', { p_key: key, p_name: current, p_data: data });
+        await load();
+        say(edMsg, 'Saved.', 'ok');
+      } catch (err) {
+        say(edMsg, (err as Error).message, 'err');
+      } finally {
+        saveBtn.disabled = false;
+      }
+    });
+
+    const saved = store.get();
+    if (saved) unlock(saved, false).catch(() => lock());
+  }
+</script>

@@ -7,11 +7,13 @@ import '../styles/global.css';
 interface Props {
   title?: string;
   description?: string;
+  noindex?: boolean;
 }
 
 const {
   title = 'Yu Perennia, a Discord bot for translation, dice and moderation',
   description = 'Yu Perennia is a Discord bot that translates your chat between English and Chinese or Japanese, rolls dice, answers 8-ball questions, and kicks troublemakers.',
+  noindex = false,
 } = Astro.props;
 ---
 
@@ -22,6 +24,7 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
     <meta name="theme-color" content="#b9a594" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />

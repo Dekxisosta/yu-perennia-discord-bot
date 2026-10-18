@@ -2,7 +2,9 @@ import asyncio
 import json
 import os
 import re
+import threading
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from pathlib import Path
 
 import aiohttp
@@ -11,6 +13,7 @@ from discord.ext import commands
 from dotenv import load_dotenv
 
 from utils.console_logger import log
+from utils.supabase_client import get_client
 
 load_dotenv()
 
@@ -111,18 +114,28 @@ class Translator:
 
 # -------------------------------------------------------- per-channel config
 class ChannelSettings:
-    """channel id -> language key, saved to a JSON file.
+    """channel id -> language key.
 
-    Channels listed in TRANSLATE_CHANNEL_IDS are seeded with a default
-    language; anything set with /translate overrides the seed (and 'off'
-    disables a seeded channel).
+    Stored in Supabase (table `translate_channels`) when configured, with a local
+    JSON file as an offline cache/fallback. Channels listed in TRANSLATE_CHANNEL_IDS
+    are seeded with a default language; anything set with /translate or in the admin
+    dashboard overrides the seed (and 'off' disables a seeded channel).
     """
+
+    TABLE = "translate_channels"
 
     def __init__(self, path: str | Path, seed_ids: set[int], default_key: str):
         self.path = Path(path)
         self._seed = {cid: default_key for cid in seed_ids}
         self._saved: dict[str, str] = {}
+        self._pending = 0
+        self._lock = threading.Lock()
         self._load()
+        self.refresh()
+
+    @staticmethod
+    def _valid(data: dict) -> dict[str, str]:
+        return {str(k): v for k, v in data.items() if v in LANGUAGES or v == "off"}
 
     def _load(self) -> None:
         try:
@@ -132,9 +145,7 @@ class ChannelSettings:
         except (OSError, ValueError) as e:
             log(f"Could not read {self.path.name}: {e}", module_name=MODULE, success=False)
             return
-        self._saved = {
-            str(k): v for k, v in data.items() if v in LANGUAGES or v == "off"
-        }
+        self._saved = self._valid(data)
 
     def _save(self) -> None:
         try:
@@ -145,6 +156,46 @@ class ChannelSettings:
         except OSError as e:
             log(f"Could not save {self.path.name}: {e}", module_name=MODULE, success=False)
 
+    def refresh(self) -> bool:
+        """Pull channel settings from Supabase (blocking; run in a thread from async code).
+
+        Returns True if Supabase answered. On any failure the current values stay.
+        """
+        client = get_client()
+        if client is None:
+            return False
+        with self._lock:
+            if self._pending:  # a local change is still being pushed; don't overwrite it
+                return False
+        try:
+            rows = client.table(self.TABLE).select("channel_id,language").execute().data or []
+        except Exception as e:
+            log(f"Could not load translate channels from Supabase: {e}", module_name=MODULE, success=False)
+            return False
+        remote = self._valid({r["channel_id"]: r["language"] for r in rows})
+        with self._lock:
+            if self._pending:
+                return False
+            changed = remote != self._saved
+            self._saved = remote
+        if changed:
+            self._save()
+            log(f"Loaded {len(remote)} translate channel(s) from Supabase.", module_name=MODULE, success=True)
+        return True
+
+    def _push(self, channel_id: str, key: str) -> None:
+        client = get_client()
+        try:
+            if client is not None:
+                client.table(self.TABLE).upsert(
+                    {"channel_id": channel_id, "language": key, "updated_at": datetime.now(timezone.utc).isoformat()}
+                ).execute()
+        except Exception as e:
+            log(f"Could not save channel {channel_id} to Supabase: {e}", module_name=MODULE, success=False)
+        finally:
+            with self._lock:
+                self._pending -= 1
+
     def get(self, channel_id: int) -> Language | None:
         key = self._saved.get(str(channel_id), self._seed.get(channel_id))
         return LANGUAGES.get(key) if key else None
@@ -152,6 +203,10 @@ class ChannelSettings:
     def set(self, channel_id: int, key: str) -> None:
         self._saved[str(channel_id)] = key
         self._save()
+        if get_client() is not None:
+            with self._lock:
+                self._pending += 1
+            threading.Thread(target=self._push, args=(str(channel_id), key), daemon=True).start()
 
     @property
     def active_count(self) -> int:

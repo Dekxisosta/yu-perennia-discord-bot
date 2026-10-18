@@ -1,8 +1,9 @@
+import asyncio
 import os
 from typing import Optional
 
 from discord import app_commands
-from discord.ext import commands
+from discord.ext import commands, tasks
 
 from config.bot_defaults import DEFAULT_PREFIX
 from config.directories import TRANSLATE_CHANNELS_FILE
@@ -65,7 +66,13 @@ class Translate(commands.Cog):
             default_key=default_key,
         )
 
+    @tasks.loop(minutes=1)
+    async def sync_settings(self):
+        # Picks up channel changes made from the admin dashboard
+        await asyncio.to_thread(self.settings.refresh)
+
     async def cog_load(self):
+        self.sync_settings.start()
         if not self.translator.configured:
             log("DEEPL_API_KEY is not set; translation is disabled.",
                 module_name="TRANSLATE", success=False)
@@ -74,6 +81,7 @@ class Translate(commands.Cog):
                 module_name="TRANSLATE", success=True)
 
     async def cog_unload(self):
+        self.sync_settings.cancel()
         await self.translator.close()
 
     @commands.hybrid_command(
