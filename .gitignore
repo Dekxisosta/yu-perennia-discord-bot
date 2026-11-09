@@ -14,3 +14,5 @@ __pycache__/
 #Ignore saved translate settings (bot runtime data only)
 /data/
 src/data/
+#Ignore downloaded voice models
+/models/

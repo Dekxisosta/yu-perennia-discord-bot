@@ -34,7 +34,7 @@ def create(
         )
 
     embed.set_footer(
-        text="Yu Perennia Bot • General Commands"
+        text="Yu Perennia Bot • Command Help"
     )
 
     return embed

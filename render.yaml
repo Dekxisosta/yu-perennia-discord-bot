@@ -5,12 +5,14 @@ services:
     env: python
     region: oregon
     plan: free
-    buildCommand: pip install -r requirements.txt
+    buildCommand: pip install -r requirements.txt && python src/utils/kokoro_engine.py
     startCommand: python src/main.py
     envVars:
       - key: DISCORD_TOKEN
         sync: false
       - key: DEEPL_API_KEY
+        sync: false
+      - key: GEMINI_API_KEY
         sync: false
       - key: SUPABASE_URL
         sync: false

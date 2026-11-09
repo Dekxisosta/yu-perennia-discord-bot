@@ -1,9 +1,14 @@
 command:
     format: "{flag} {text}"
-    channel-set: "Order received! Yu will translate between English and {language} {flag} in this channel! 🍵"
+    # {language}/{flag} = the language translated into; {source}/{source_flag} = the chosen input language
+    channel-set: "Order received! Yu will translate everything in this channel into {language} {flag}, and anything already in {language} into English! 🍵"
+    channel-set-english: "Order received! Yu will translate everything in this channel into English {flag}! 🍵"
+    channel-set-pair: "Order received! Yu will translate between {source} {source_flag} and {language} {flag} in this channel! 🍵"
     channel-off: "Understood! Translation is off in this channel. Yu's putting the tray away! 🛎️"
     server-only: "Oh, that only works inside a server channel! Please try again over there!"
-    unknown-language: "Sorry, that's not on the menu! Yu knows Chinese and Japanese. Or say Off to stop!"
+    unknown-language: "Sorry, that's not on the menu! Yu can do: {languages}. Say Off to stop!"
+    same-language: "Hm? Both sides are {language}! Pick two different languages!"
+    already-target: "That's already in {language}! Nothing for Yu to translate!"
     off-with-text: "Hm? Off is just for turning translation off in a channel. It can't translate text!"
     empty: "Hm? The tray's empty! There's nothing here for Yu to translate!"
     unsupported: "Sorry, Yu couldn't find any text to translate in that! Mind checking it?"

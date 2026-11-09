@@ -1,5 +1,11 @@
-discord.py
+discord.py[voice]
+davey>=0.1.6,<0.2
 python-dotenv
 PyYAML
 aiohttp
 supabase
+edge-tts
+imageio-ffmpeg
+kokoro-onnx
+pykakasi
+anyascii

@@ -1,0 +1,161 @@
+# Text-to-speech (voice channel reader). Edited here or from the admin dashboard.
+# Slash-command choices (voices) are fixed at startup; everything else reloads with the config.
+
+settings:
+    default-voice: "alpha"
+    max-chars: 400          # longer messages are cut at a word boundary
+    chunk-chars: 120        # long messages are spliced at punctuation into parts of at most this size
+    chunk-first-chars: 60   # the first part is shorter so speech starts sooner
+    max-queue: 15           # messages waiting per server; extras are dropped
+    announce-gap: 45        # seconds of silence after which the speaker is announced again
+    synth-timeout: 20       # seconds to wait for a voice clip before skipping the message
+    translate: true         # master switch: translate non-English messages to English before reading them (servers also have /server-settings vctranslatetoggle)
+    translate-timeout: 6    # seconds to wait for DeepL before reading the original text instead
+
+# Choices for /user-settings vcsetvoice and /server-settings vcsetvoice. key -> label shown in Discord.
+# id is an edge-tts voice name, or "kokoro:<voice>" for the local Kokoro model.
+# Kokoro ids can also set speed ("kokoro:af_heart@1.1"), pitch ("kokoro:af_heart^1.2", 1.2 = 20% higher)
+# or blend voices ("kokoro:af_heart+af_bella"). Combine: "kokoro:af_heart+af_bella@1.08^1.2".
+voices:
+    heart:   { label: "Heart (Kokoro, US female)",    id: "kokoro:af_heart" }
+    bella:   { label: "Bella (Kokoro, US female)",    id: "kokoro:af_bella" }
+    nicole:  { label: "Nicole (Kokoro, US female)",   id: "kokoro:af_nicole" }
+    sky:     { label: "Sky (Kokoro, US female)",      id: "kokoro:af_sky" }
+    kore:    { label: "Kore (Kokoro, US female)",     id: "kokoro:af_kore" }
+    sparkle: { label: "Sparkle (Kokoro, anime-ish blend)", id: "kokoro:af_heart+af_bella@1.08^1.2" }
+    # Experimental: Japanese-trained Kokoro voices reading English (accented, but often very anime)
+    alpha:   { label: "Alpha (Kokoro, Japanese voice, English text)",      id: "kokoro:jf_alpha@1.08^1.1" }
+    nezumi:  { label: "Nezumi (Kokoro, Japanese voice, English text)",     id: "kokoro:jf_nezumi@1.08^1.2" }
+    tebukuro: { label: "Tebukuro (Kokoro, Japanese voice, English text)",  id: "kokoro:jf_tebukuro@1.08^1.2" }
+    gongitsune: { label: "Gongitsune (Kokoro, Japanese voice, English text)", id: "kokoro:jf_gongitsune@1.08^1.2" }
+    emma_k:  { label: "Emma (Kokoro, UK female)",     id: "kokoro:bf_emma" }
+    adam:    { label: "Adam (Kokoro, US male)",       id: "kokoro:am_adam" }
+    aria:    { label: "Aria (US, female)",     id: "en-US-AriaNeural" }
+    jenny:   { label: "Jenny (US, female)",    id: "en-US-JennyNeural" }
+    emma:    { label: "Emma (US, female)",     id: "en-US-EmmaNeural" }
+    guy:     { label: "Guy (US, male)",        id: "en-US-GuyNeural" }
+    andrew:  { label: "Andrew (US, male)",     id: "en-US-AndrewNeural" }
+    sonia:   { label: "Sonia (UK, female)",    id: "en-GB-SoniaNeural" }
+    ryan:    { label: "Ryan (UK, male)",       id: "en-GB-RyanNeural" }
+    natasha: { label: "Natasha (AU, female)",  id: "en-AU-NatashaNeural" }
+    william: { label: "William (AU, male)",    id: "en-AU-WilliamNeural" }
+    yu_original: { label: "Alpha x Sparkle (Kokoro, blend)", id: "kokoro:jf_alpha:0.5+af_heart:0.25+af_bella:0.25@1.05^1.15" }
+
+# Words the voice reads wrong. Matched as whole words, ignoring case. No size limit.
+pronunciations:
+    gg: "good game"
+    ggs: "good games"
+    wp: "well played"
+    gl: "good luck"
+    hf: "have fun"
+    ez: "easy"
+    lol: "L O L"
+    lmao: "L M A O"
+    rofl: "rofl"
+    omg: "oh my god"
+    wtf: "W T F"
+    brb: "be right back"
+    afk: "A F K"
+    idk: "I don't know"
+    idc: "I don't care"
+    tbh: "to be honest"
+    imo: "in my opinion"
+    imho: "in my humble opinion"
+    fyi: "for your information"
+    btw: "by the way"
+    smh: "shaking my head"
+    irl: "in real life"
+    rn: "right now"
+    ngl: "not gonna lie"
+    fr: "for real"
+    ikr: "I know right"
+    nvm: "never mind"
+    dm: "D M"
+    pm: "P M"
+    pls: "please"
+    plz: "please"
+    thx: "thanks"
+    ty: "thank you"
+    np: "no problem"
+    ily: "I love you"
+    ttyl: "talk to you later"
+    gtg: "got to go"
+    jk: "just kidding"
+    bff: "B F F"
+    npc: "N P C"
+    xp: "X P"
+    dps: "D P S"
+    op: "O P"
+    noob: "newb"
+    sus: "suss"
+    rizz: "riz"
+    bruh: "bro"
+    discord: "Discord"
+    youtube: "YouTube"
+    tiktok: "Tik Tok"
+    roblox: "Roblox"
+    minecraft: "Minecraft"
+
+responses:
+    join-ok: "Order up! Yu joined **{voice}** and will read out messages from {text}! 🍵"
+    join-moved: "Yu moved to **{voice}** and will read out messages from {text}! 🍵"
+    leave-ok: "Understood! Yu left the voice channel and put the tray away! 🛎️"
+    voice-set: "Done! Yu will read your messages in **{voice}** from now on! 🎙️"
+    auto-left: "Everyone left the voice channel, so Yu clocked out! 🐐"
+    vc-greet-on: "Greetings are **on**! Yu will welcome people who join her voice channel and say goodbye when they leave! 👋"
+    vc-greet-off: "Greetings are **off**. Yu won't greet people anymore."
+    vc-greet-status-on: "Greetings are **on**. Yu welcomes people who join and says goodbye when they leave."
+    vc-greet-status-off: "Greetings are **off**. Use `/server-settings vcgreettoggle on` to turn them on!"
+    # Spoken out loud by Yu ({name} is the person's display name)
+    greet-join: "Welcome, {name}!"
+    greet-leave: "Goodbye, {name}!"
+    voice-reset: "Done! Yu will use the server's voice for your messages again! 🎙️"
+    server-voice-set: "Done! Yu's default voice in this server is **{voice}**! Personal voices still win. 🎙️"
+    server-voice-reset: "Done! Yu's default voice in this server is back to normal! 🎙️"
+    user-settings-usage: "Try `/user-settings vctoggle`, `/user-settings vcsayname` or `/user-settings vcsetvoice`!"
+    server-settings-usage: "Try `/server-settings auto-join toggle`, `/server-settings vctoggle`, `/server-settings vcsayname`, `/server-settings vctranslatetoggle`, `/server-settings translate-api`, `/server-settings vcgreettoggle` or `/server-settings vcsetvoice`!"
+    auto-join-ok: "Yu joined **{voice}** and will read out its chat! 🍵"
+    auto-join-added: "Auto-join is **on** for **{voice}**! Yu will hop in when someone joins it and read out its chat. Other voice channels are unaffected. 🍵"
+    auto-join-already: "Auto-join is already **on** for **{voice}**."
+    auto-join-removed: "Auto-join is **off** for **{voice}**. Yu will wait to be called there with `/vcjoin`! 🛎️"
+    auto-join-not-listed: "Auto-join was already **off** for **{voice}**."
+    auto-join-status-on: "Auto-join is **on** for **{voice}**."
+    auto-join-status-off: "Auto-join is **off** for **{voice}**. Use `/server-settings auto-join toggle enabled:True` while you're in it, or `/server-settings auto-join add`!"
+    auto-join-list: "Yu auto-joins these voice channels: {channels}"
+    auto-join-list-empty: "No voice channels are set to auto-join. Use `/server-settings auto-join toggle` while you're in one, or `/server-settings auto-join add`!"
+    auto-join-need-channel: "Join the voice channel you want first, or use `/server-settings auto-join add` to pick one!"
+    auto-join-usage: "Try `/server-settings auto-join toggle`, `/server-settings auto-join add`, `/server-settings auto-join remove` or `/server-settings auto-join list`!"
+    auto-join-no-permission: "Sorry, only people with **Manage Server** can change this!"
+    vc-translate-on: "Translation is **on**! Yu will translate other languages to English before reading them out in this server. 🌐"
+    vc-translate-off: "Translation is **off**. Yu will read messages exactly as they were written in this server."
+    vc-translate-status-on: "Translation is **on** for this server."
+    vc-translate-status-off: "Translation is **off** for this server. Use `/server-settings vctranslatetoggle on` to turn it on!"
+    translate-api-set: "Done! Yu will use **{api}** to translate messages in voice channels! 🌐"
+    translate-api-status: "Yu translates voice channel messages with **{api}**."
+    translate-api-missing-key: "Heads up: **{api}** isn't set up on this bot yet (no `{env}` in its environment), so Yu will read messages as they are until it is."
+    vc-sayname-on: "Done! Yu will say your name before reading your messages! 🎙️"
+    vc-sayname-off: "Okay! Yu won't say your name before your messages anymore. Use `/user-settings vcsayname on` to turn it back on!"
+    vc-sayname-reset: "Done! Yu will follow the server's setting for saying your name again! 🎙️"
+    server-vc-sayname-on: "Yu will say the speaker's name before reading messages in this server, unless people turned it off for themselves. 🎙️"
+    server-vc-sayname-off: "Yu won't say speakers' names before messages in this server, unless people turned it on for themselves with `/user-settings vcsayname on`."
+    server-vc-sayname-status-on: "Saying names is **on** for this server."
+    server-vc-sayname-status-off: "Saying names is **off** for this server. Use `/server-settings vcsayname on` to turn it on!"
+    vc-toggle-reset: "Done! Yu will follow the server's setting for your messages again! 🎙️"
+    server-vc-toggle-on: "Voice reading is **on** for this server! Yu reads people's messages in voice channels, unless they turned it off for themselves. 🎙️"
+    server-vc-toggle-off: "Voice reading is **off** for this server. Yu only reads people who turned it on for themselves with `/user-settings vctoggle on`."
+    server-vc-toggle-status-on: "Voice reading is **on** for this server."
+    server-vc-toggle-status-off: "Voice reading is **off** for this server. Use `/server-settings vctoggle on` to turn it on!"
+    vc-toggle-on: "Done! Yu will read your messages in voice channels again! 🎙️"
+    vc-toggle-off: "Okay! Yu won't read your messages in voice channels anymore. Use `/user-settings vctoggle on` to turn it back on! 🤫"
+    auto-join-bad-channel: "Oh no, Yu can't see or send messages in that channel! Please pick another one!"
+    server-only: "Oh, that only works inside a server! Please try again over there!"
+    not-in-voice: "Oh! Please join a voice channel first, then call Yu again!"
+    no-session: "Yu isn't reading anything here yet! Use `/vcjoin` first!"
+    no-permission: "Oh no, Yu isn't allowed to connect or speak in that voice channel!"
+    no-ffmpeg: "Oh no, Yu's voice kit (FFmpeg) isn't installed on this server yet!"
+    no-opus: "Oh no, Yu's voice codec (libopus) isn't installed on this server yet!"
+    failed: "Oops, Yu couldn't join the voice channel! Please try again!"
+    unknown-voice: "Sorry, that voice isn't on the menu!"
+    vc-chatmode-on: "Chat mode is **on** for {channel}! Yu won't read messages out loud there anymore. She listens to the conversation and joins in out loud instead. 💬"
+    vc-chatmode-off: "Chat mode is **off** for {channel}. Yu goes back to reading messages out loud. 🎙️"
+    vc-chatmode-missing-key: "Heads up: this bot has no `GEMINI_API_KEY`, so Yu can't join the conversation until the bot owner adds one."

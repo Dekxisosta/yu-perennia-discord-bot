@@ -11,47 +11,6 @@ from datastore.static_data import config
 from services.commands import translate_service as ts
 from utils.console_logger import log
 
-LANGUAGE_CHOICES = [
-    app_commands.Choice(name="English", value="en"),
-    app_commands.Choice(name="Filipino", value="fil"),
-    app_commands.Choice(name="Chinese", value="zh"),
-    app_commands.Choice(name="Chinese (Traditional)", value="zh-TW"),
-    app_commands.Choice(name="Japanese", value="ja"),
-    app_commands.Choice(name="Korean", value="ko"),
-    app_commands.Choice(name="Spanish", value="es"),
-    app_commands.Choice(name="French", value="fr"),
-    app_commands.Choice(name="German", value="de"),
-    app_commands.Choice(name="Portuguese", value="pt"),
-    app_commands.Choice(name="Brazilian Portuguese", value="pt-BR"),
-    app_commands.Choice(name="Russian", value="ru"),
-    app_commands.Choice(name="Arabic", value="ar"),
-    app_commands.Choice(name="Hindi", value="hi"),
-    app_commands.Choice(name="Bengali", value="bn"),
-    app_commands.Choice(name="Indonesian", value="id"),
-    app_commands.Choice(name="Malay", value="ms"),
-    app_commands.Choice(name="Thai", value="th"),
-    app_commands.Choice(name="Vietnamese", value="vi"),
-    app_commands.Choice(name="Turkish", value="tr"),
-    app_commands.Choice(name="Italian", value="it"),
-    app_commands.Choice(name="Dutch", value="nl"),
-    app_commands.Choice(name="Polish", value="pl"),
-    app_commands.Choice(name="Ukrainian", value="uk"),
-    app_commands.Choice(name="Greek", value="el"),
-    app_commands.Choice(name="Czech", value="cs"),
-    app_commands.Choice(name="Swedish", value="sv"),
-    app_commands.Choice(name="Danish", value="da"),
-    app_commands.Choice(name="Finnish", value="fi"),
-    app_commands.Choice(name="Norwegian", value="no"),
-    app_commands.Choice(name="Romanian", value="ro"),
-    app_commands.Choice(name="Hungarian", value="hu"),
-    app_commands.Choice(name="Hebrew", value="he"),
-    app_commands.Choice(name="Persian", value="fa"),
-    app_commands.Choice(name="Tamil", value="ta"),
-    app_commands.Choice(name="Urdu", value="ur"),
-    app_commands.Choice(name="Swahili", value="sw"),
-    app_commands.Choice(name="Off", value="off"),
-]
-
 
 class Translate(commands.Cog):
     def __init__(self, bot):
@@ -79,6 +38,9 @@ class Translate(commands.Cog):
         else:
             log(f"Auto-translate active in {self.settings.active_count} channel(s).",
                 module_name="TRANSLATE", success=True)
+        if self.settings.unsupported_count:
+            log(f"{self.settings.unsupported_count} channel(s) use a language Yu no longer supports and are paused. "
+                f"Supported: {ts.supported_names()}.", module_name="TRANSLATE", success=False)
 
     async def cog_unload(self):
         self.sync_settings.cancel()
@@ -89,11 +51,19 @@ class Translate(commands.Cog):
         description=config["utility"]["commands"]["translate"]["desc"],
     )
     @app_commands.describe(
-        language="Chinese or Japanese (paired with English), or Off to stop translating here",
+        language="Language to translate into, or Off to stop translating in this channel",
         text="Optional: translate this text once instead of changing the channel",
+        source="Language of the input (default: auto-detect)",
     )
-    @app_commands.choices(language=LANGUAGE_CHOICES)
-    async def translate(self, ctx: commands.Context, language: str, *, text: Optional[str] = None):
+    @app_commands.rename(language="to", source="from")
+    async def translate(
+        self,
+        ctx: commands.Context,
+        language: str,
+        *,
+        text: Optional[str] = None,
+        source: str = "auto",
+    ):
         await ts.translate_command(
             ctx=ctx,
             translator=self.translator,
@@ -101,7 +71,19 @@ class Translate(commands.Cog):
             language=language,
             text=text,
             cfg=config["translate"]["command"],
+            source=source,
         )
+
+    @translate.autocomplete("language")
+    async def language_autocomplete(self, interaction, current: str):
+        return [app_commands.Choice(name=n, value=k) for n, k in ts.language_options(current)]
+
+    @translate.autocomplete("source")
+    async def source_autocomplete(self, interaction, current: str):
+        return [
+            app_commands.Choice(name=n, value=k)
+            for n, k in ts.language_options(current, extra=("Auto-detect", "auto"))
+        ]
 
     @commands.Cog.listener()
     async def on_message(self, message):

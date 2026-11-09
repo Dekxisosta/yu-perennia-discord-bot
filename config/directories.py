@@ -11,3 +11,5 @@ LOGGING = str(ROOT / "src" / "log" / "discord.log")
 TRANSLATE_CHANNELS_FILE = str(ROOT / "data" / "translate_channels.json")
 
 
+SERVER_SETTINGS_FILE = str(ROOT / "data" / "server_settings.json")
+TTS_USER_SETTINGS_FILE = str(ROOT / "data" / "tts_user_settings.json")

@@ -4,7 +4,7 @@ prefix: "mod"
 commands:
   kick:
     desc: "Kicks a user from the server with proper authorization."
-    usage: "/kick <user> | yp!mod kick <user>"
+    usage: "/mod kick <user> [reason] | yp!mod kick <user> [reason]"
     more-desc: "Kicks a user from the server. Yu ensures this action is safe and justified."
     user-perms:
       - kick_members

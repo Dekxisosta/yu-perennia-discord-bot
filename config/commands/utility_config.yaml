@@ -3,8 +3,8 @@ prefix: "util"
 
 commands:
     translate:
-        usage: "/translate <language> [text] | yp!translate <language> [text]"
-        more-desc: "Sets this channel to auto-translate between English and Chinese or Japanese (or Off). Add text to translate it once instead."
+        usage: "/translate <to> [text] [from] | yp!translate <language> [from:<language>] [text]"
+        more-desc: "Translates into the language you pick (English, Spanish, Mandarin Chinese, Simplified Chinese, Traditional Chinese, French, German, Arabic, Hindi, Japanese, Russian or Portuguese). The input language is auto-detected unless you set 'from'; a single message is translated from that language. Leave the text out to set up this channel; with a 'from' language Yu then translates both ways between the two languages. Off stops it. For two-word names, use quotes in prefix commands, e.g. yp!translate \"Traditional Chinese\" from:ja."
         user-perms:
             - view_channel
             - send_messages
@@ -12,3 +12,98 @@ commands:
             - view_channel
             - send_messages
         desc: "Yu translates for you, so everyone at the table can understand each other! 🍵"
+
+    vcjoin:
+        usage: "/vcjoin | yp!vcjoin"
+        more-desc: "Yu joins the voice channel you're in and reads this text channel's messages out loud. She leaves by herself as soon as no people are left with her."
+        user-perms:
+            - view_channel
+            - send_messages
+        bot-perms:
+            - view_channel
+            - send_messages
+            - connect
+            - speak
+        desc: "Yu joins your voice channel and reads this channel out loud! 🎙️"
+
+    vcleave:
+        usage: "/vcleave | yp!vcleave"
+        more-desc: "Yu leaves her voice channel and stops reading messages."
+        user-perms:
+            - view_channel
+            - send_messages
+        bot-perms:
+            - view_channel
+            - send_messages
+        desc: "Yu leaves the voice channel and puts the tray away! 🛎️"
+
+    leave:
+        usage: "/leave | yp!leave"
+        more-desc: "Yu leaves her voice channel and stops reading messages."
+        user-perms:
+            - view_channel
+            - send_messages
+        bot-perms:
+            - view_channel
+            - send_messages
+        desc: "Yu leaves the voice channel and puts the tray away! 🛎️"
+
+    ask:
+        usage: "/ask <question> | yp!ask <question>"
+        more-desc: "Ask Yu anything and she answers in this channel, powered by Google Gemini Flash-Lite. Keep questions under 1000 characters; there is a short cooldown between questions. Answers can be wrong, so double-check anything important."
+        user-perms:
+            - view_channel
+            - send_messages
+        bot-perms:
+            - view_channel
+            - send_messages
+        desc: "Ask Yu a question and she answers in this channel! 💭"
+
+    vcask:
+        usage: "/vcask <question> | yp!vcask <question>"
+        more-desc: "Ask Yu a question and she answers out loud in your voice channel (and types it here too). You need to be in a voice channel; if Yu isn't in one yet she joins yours and reads this text channel like /vcjoin. If she is in a different voice channel, join hers first. She speaks in your own voice setting, then the server's. Powered by Google Gemini Flash-Lite."
+        user-perms:
+            - view_channel
+            - send_messages
+            - connect
+        bot-perms:
+            - view_channel
+            - send_messages
+            - connect
+            - speak
+        desc: "Ask Yu a question and she answers out loud in your voice channel! 🎙️"
+
+    vcchatmodetoggle:
+        usage: "/vcchatmodetoggle [on|off] | yp!vcchatmodetoggle [on|off]"
+        more-desc: "Staff only (Manage Server). Turns chat mode on or off for the text channel you run it in (empty = flip it). In chat mode Yu no longer reads that channel's messages out loud; instead each message from someone in her voice channel is put to her, as if she were part of the conversation. She remembers the channel's last few messages (per channel, not saved anywhere), answers out loud in the server's voice, types the reply too, and stays quiet when people are just talking to each other. People who turned their own vctoggle off are left out. Powered by Google Gemini Flash-Lite (needs GEMINI_API_KEY)."
+        user-perms:
+            - manage_guild
+        bot-perms:
+            - view_channel
+            - send_messages
+            - connect
+            - speak
+        desc: "Yu joins the conversation here instead of reading messages aloud! 💬"
+
+    user-settings:
+        usage: "/user-settings vctoggle <on|off|reset> | /user-settings vcsayname <on|off|reset> | /user-settings vcsetvoice [voice]"
+        more-desc: "Your personal settings. vctoggle turns Yu reading your own messages in voice channels on, off, or back to the server's setting (reset). vcsayname chooses whether Yu says your name before your messages. vcsetvoice picks the voice Yu reads your messages with (leave it empty to use the server's voice). They are remembered and beat the server's settings."
+        user-perms:
+            - view_channel
+            - send_messages
+        bot-perms:
+            - view_channel
+            - send_messages
+        desc: "Change how Yu treats you! ⚙️"
+
+    server-settings:
+        usage: "/server-settings auto-join toggle [enabled] | /server-settings auto-join add <voice channel> | /server-settings auto-join remove <voice channel> | /server-settings auto-join list | /server-settings vctoggle [on|off] | /server-settings vcsayname [on|off] | /server-settings vctranslatetoggle [on|off] | /server-settings translate-api [deepl|google] | /server-settings vcgreettoggle [on|off] | /server-settings vcsetvoice [voice]"
+        more-desc: "Staff only (Manage Server). Auto-join only applies to the voice channels you pick: run auto-join toggle while you're in a voice channel to turn it on or off for that one, or use auto-join add / remove to pick a channel by name (auto-join list shows them). Yu joins one of those voice channels by herself when someone enters it and reads that voice channel's own chat. She leaves immediately when no people are left. vctoggle turns Yu reading messages in voice channels on or off for the whole server (people can override it for themselves). vcsayname chooses whether Yu says the speaker's name before each message (people can override it for themselves). vctranslatetoggle turns translating other languages to English (before reading) on or off for the server, and translate-api picks DeepL or Google Translate for it. vcgreettoggle makes Yu say 'Welcome, <name>!' when someone joins her voice channel and 'Goodbye, <name>!' when they leave. vcsetvoice sets the voice for people who haven't picked their own."
+        user-perms:
+            - manage_guild
+        bot-perms:
+            - view_channel
+            - send_messages
+            - connect
+            - speak
+        desc: "Set Yu up to join voice channels by herself! ⚙️"
